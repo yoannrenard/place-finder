@@ -85,6 +85,10 @@ class Place
      */
     protected $isOnline;
 
+
+    /**
+     * Construct
+     */
     public function __construct()
     {
         $this->isOnline = false;
