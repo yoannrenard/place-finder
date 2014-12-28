@@ -3,9 +3,11 @@
 namespace PlaceFinder\Bundle\DomainBundle\Entity;
 
 use \DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategory;
 
 /**
  * Place
@@ -85,13 +87,19 @@ class Place
      */
     protected $isOnline;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="PlaceCategory", inversedBy="places")
+     * @ORM\JoinTable(name="place_categories")
+     **/
+    protected $placeCategories;
 
     /**
      * Construct
      */
     public function __construct()
     {
-        $this->isOnline = false;
+        $this->placeCategories = new ArrayCollection();
+        $this->isOnline        = false;
     }
 
     /**
@@ -218,5 +226,25 @@ class Place
     public function setDeletedAt(DateTime $deletedAt)
     {
         $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsOnline()
+    {
+        return $this->isOnline;
+    }
+
+    /**
+     * @param boolean $isOnline
+     *
+     * @return $this
+     */
+    public function setIsOnline($isOnline)
+    {
+        $this->isOnline = $isOnline;
+
+        return $this;
     }
 }
