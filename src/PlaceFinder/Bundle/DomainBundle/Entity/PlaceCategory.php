@@ -39,6 +39,9 @@ class PlaceCategory
     protected $places;
 
 
+    /**
+     * Construct
+     */
     public function __construct()
     {
         $this->places = new ArrayCollection();
