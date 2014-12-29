@@ -1,0 +1,6 @@
+---
+PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategory:
+    PlaceCategory1:
+        name: Pub
+    PlaceCategory2:
+        name: Bar
