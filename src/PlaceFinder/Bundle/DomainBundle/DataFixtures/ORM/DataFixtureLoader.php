@@ -22,8 +22,8 @@ class DataFixtureLoader extends BaseDataFixtureLoader
         $placeDir = sprintf('%s%s%s%s', __DIR__, DIRECTORY_SEPARATOR, self::PLACE_DIR, DIRECTORY_SEPARATOR);
 
         return  array(
-            $placeDir . 'place_category.yml', // no dependency
-            $placeDir . 'place.yml',          // require place_category
+            $placeDir . 'place_category.yml',   // no dependency
+            $placeDir . 'place.yml',            // no dependency
         );
     }
 }
