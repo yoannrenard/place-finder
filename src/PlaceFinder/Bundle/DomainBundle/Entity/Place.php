@@ -13,7 +13,7 @@ use PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategory;
  * Place
  *
  * @ORM\Table(name="place")
- * @ORM\Entity(repositoryClass="PlaceFinder\Bundle\DomainBundle\Entity\PlaceRepository")
+ * @ORM\Entity(repositoryClass="PlaceFinder\Bundle\DomainBundle\Repository\PlaceRepository")
  *
  * @Gedmo\SoftDeleteable(fieldName="deleted_at", timeAware=false)
  */

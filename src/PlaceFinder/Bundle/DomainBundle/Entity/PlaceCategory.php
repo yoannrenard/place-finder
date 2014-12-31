@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * PlaceCategory
  *
  * @ORM\Table(name="place_category")
- * @ORM\Entity(repositoryClass="PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategoryRepository")
+ * @ORM\Entity(repositoryClass="PlaceFinder\Bundle\DomainBundle\Repository\PlaceCategoryRepository")
  */
 class PlaceCategory
 {
