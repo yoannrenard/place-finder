@@ -31,6 +31,7 @@ class AppKernel extends Kernel
             // API
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new PlaceFinder\Bundle\APIBundle\PlaceFinderAPIBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

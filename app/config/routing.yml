@@ -1,0 +1,4 @@
+place_finder_api:
+    resource: PlaceFinder\Bundle\APIBundle\Controller\PlaceController
+    prefix:   /api
+    type:     rest
