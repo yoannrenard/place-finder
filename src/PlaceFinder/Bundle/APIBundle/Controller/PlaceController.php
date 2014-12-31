@@ -3,6 +3,8 @@
 namespace PlaceFinder\Bundle\APIBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
+use PlaceFinder\Bundle\DomainBundle\Entity\Place;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class PlaceController
@@ -12,18 +14,13 @@ use FOS\RestBundle\Controller\FOSRestController;
 class PlaceController extends FOSRestController
 {
     /**
-     * @param $id
+     * @param Place $place
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    public function getPlaceAction($id)
+    public function getPlaceAction(Place $place)
     {
-        $data = array(
-            'toto' => 'tata',
-            'tata' => 'titi',
-            'id'    => $id,
-        );
-        $view = $this->view($data, 200);
+        $view = $this->view($place, Response::HTTP_OK);
 
         return $this->handleView($view);
     }
