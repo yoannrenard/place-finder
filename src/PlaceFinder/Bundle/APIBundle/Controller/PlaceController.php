@@ -14,6 +14,18 @@ use Symfony\Component\HttpFoundation\Response;
 class PlaceController extends FOSRestController
 {
     /**
+     * @return Response
+     */
+    public function getPlacesAction()
+    {
+        $placeList = $this->container->get('place_finder_domain.manager.place_finder')->getAllFiltered();
+
+        $view = $this->view($placeList, Response::HTTP_OK);
+
+        return $this->handleView($view);
+    }
+
+    /**
      * @param Place $place
      *
      * @return Response
