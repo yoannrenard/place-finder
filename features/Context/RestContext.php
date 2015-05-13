@@ -14,17 +14,11 @@ use Guzzle\Http\ClientInterface;
  */
 class RestContext extends BehatContext
 {
-    /** @var null|\stdClass */
-    protected $restObject;
-
     /** @var \Guzzle\Http\ClientInterface */
     protected $client;
 
     /** @var \Guzzle\Http\Message\Response */
     protected $response;
-
-    /** @var string */
-    protected $requestUrl;
 
     /** @var array */
     protected $parameters;
@@ -33,15 +27,13 @@ class RestContext extends BehatContext
     protected $responseBody;
 
     /**
-     * Initializes context.
-     * Every scenario gets it's own context object.
+     * Construct
      *
      * @param array           $parameters
      * @param ClientInterface $client
      */
     public function __construct(array $parameters, ClientInterface $client)
     {
-        $this->restObject = new \stdClass();
         $this->parameters = $parameters;
         $this->client     = $client;
     }
@@ -62,12 +54,20 @@ class RestContext extends BehatContext
         }
     }
 
+    /**
+     * @param string $objectType
+     *
+     * @return string
+     */
     protected function getRestObjectFromObjectType($objectType)
     {
         return sprintf('%ss', strtolower($objectType));
     }
 
     /**
+     * @param string $objectType
+     * @param int    $id
+     *
      * @Given /^that I want to find the "([^"]*)" identified by "([^"]*)"$/
      */
     public function thatIWantToFindTheIdentifiedBy($objectType, $id)
@@ -76,6 +76,9 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @param string    $objectType
+     * @param TableNode $table
+     *
      * @Given /^that I want to find a "([^"]*)" with:$/
      */
     public function thatIWantToFindA($objectType, TableNode $table)
@@ -88,53 +91,52 @@ class RestContext extends BehatContext
 //     */
 //    public function thatIWantToMakeANew($objectType)
 //    {
-//        $this->restObjectType   = ucwords(strtolower($objectType));
-//        $this->restObjectMethod = 'post';
+//        $this->iRequest(sprintf('%s', $this->getRestObjectFromObjectType($objectType)), 'POST');
 //    }
 //
 //    /**
-//     * @Given /^that I want to find a "([^"]*)"$/
-//     */
-//    public function thatIWantToFindA($objectType)
-//    {
-//        $this->restObjectType   = ucwords(strtolower($objectType));
-//        $this->restObjectMethod = 'get';
-//    }
-//
-//    /**
-//     * @Given /^that I want to delete a "([^"]*)"$/
+//     * @Given /^that I want to delete the "([^"]*) identified by "([^"]*)"$/
 //     */
 //    public function thatIWantToDeleteA($objectType)
 //    {
-//        $this->restObjectType   = ucwords(strtolower($objectType));
-//        $this->restObjectMethod = 'delete';
+//        $this->iRequest(sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id), 'DELETE');
 //    }
 
-    protected function getFormattedRequestUrlWithParams()
+    /**
+     * @param string $requestUrl
+     * @param array  $paramList
+     *
+     * @return string
+     */
+    protected function getFormattedRequestUrlWithParams($requestUrl, array $paramList = array())
     {
         if (!empty($this->restObject)) {
-            return $this->requestUrl.'?'.http_build_query((array) $this->restObject);
+            return $requestUrl.'?'.http_build_query((array) $this->restObject);
         }
 
-        return $this->requestUrl;
+        return $requestUrl;
     }
 
     /**
+     * @param string $requestUrl
+     * @param string $method
+     * @param array  $paramList
+     *
+     * @throws \Exception
+     *
      * @When /^I request "([^"]*)"$/
      */
-    public function iRequest($pageUrl, $method = 'GET')
+    public function iRequest($requestUrl, $method = 'GET', array $paramList = array())
     {
-        $this->requestUrl = $pageUrl;
-
         switch ($method) {
             case 'GET':
-                $request = $this->client->get($this->getFormattedRequestUrlWithParams());
+                $request = $this->client->get($this->getFormattedRequestUrlWithParams($requestUrl, $paramList));
                 break;
             case 'POST':
-                $request = $this->client->post($this->requestUrl, null, (array) $this->restObject);
+                $request = $this->client->post($this->getFormattedRequestUrlWithParams($requestUrl), null, (array) $paramList);
                 break;
             case 'DELETE':
-                $request = $this->client->delete($this->getFormattedRequestUrlWithParams());
+                $request = $this->client->delete($this->getFormattedRequestUrlWithParams($requestUrl, $paramList));
                 break;
             default:
                 throw new Exception(sprintf('The HTTP method "%s" isn\'t supported', $method));
@@ -149,6 +151,11 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @param string $propertyName
+     * @param string $typeString
+     *
+     * @throws \Exception
+     *
      * @Given /^the type of the "([^"]*)" property is ([^"]*)$/
      */
     public function theTypeOfThePropertyIsNumeric($propertyName, $typeString)
@@ -173,16 +180,16 @@ class RestContext extends BehatContext
         }
     }
 
-    /**
-     * @Then /^echo last response$/
-     */
-    public function echoLastResponse()
-    {
-        $this->printDebug(
-            $this->requestUrl."\n\n".
-            $this->response
-        );
-    }
+//    /**
+//     * @Then /^echo last response$/
+//     */
+//    public function echoLastResponse()
+//    {
+//        $this->printDebug(
+//            $this->requestUrl."\n\n".
+//            $this->response
+//        );
+//    }
 
     /**
      * @param string $format
@@ -201,6 +208,8 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @throws \Exception
+     *
      * @Then /^the response should be JSON$/
      */
     public function theResponseShouldBeJson()
@@ -212,6 +221,10 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @param int $httpStatus
+     *
+     * @throws \Exception
+     *
      * @Then /^the response status code should be (\d+)$/
      */
     public function theResponseStatusCodeShouldBe($httpStatus)
@@ -222,6 +235,10 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @param string $reasonPhrase
+     *
+     * @throws \Exception
+     *
      * @Then /^the response reasonPhrase should be "([^"]*)"$/
      */
     public function theResponseReasonPhraseShouldBe($reasonPhrase)
@@ -232,6 +249,10 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @param string $propertyName
+     *
+     * @throws \Exception
+     *
      * @Given /^the response has a "([^"]*)" property$/
      */
     public function theResponseHasAProperty($propertyName)
@@ -242,6 +263,11 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @param string $propertyName
+     * @param string $propertyValue
+     *
+     * @throws \Exception
+     *
      * @Then /^the "([^"]*)" property equals "([^"]*)"$/
      */
     public function thePropertyEquals($propertyName, $propertyValue)
