@@ -3,6 +3,7 @@
 namespace PlaceFinder\Bundle\APIBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use PlaceFinder\Bundle\DomainBundle\Entity\Place;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,7 +15,15 @@ use Symfony\Component\HttpFoundation\Response;
 class PlaceController extends FOSRestController
 {
     /**
+     * Get a list of places
+     *
      * @return Response
+     *
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Get a list of places",
+     *  output="Place[]"
+     * )
      */
     public function getPlacesAction()
     {
@@ -26,9 +35,28 @@ class PlaceController extends FOSRestController
     }
 
     /**
+     * Get a place
+     *
      * @param Place $place
      *
      * @return Response
+     *
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Get a list of places",
+     *  requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="place id"
+     *      }
+     *  },
+     *  parameters={
+     *      {"name"="id", "dataType"="integer", "required"=true, "description"="place id"}
+     *  },
+     *  output="Place"
+     * )
      */
     public function getPlaceAction(Place $place)
     {

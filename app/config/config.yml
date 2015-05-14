@@ -80,3 +80,6 @@ fos_rest:
             xml:  true
     routing_loader:
         default_format: json
+
+# NelmioApiDoc
+nelmio_api_doc: ~
