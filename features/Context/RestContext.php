@@ -6,6 +6,8 @@ use Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
 use Guzzle\Http\ClientInterface;
+use Guzzle\Http\Message\RequestInterface;
+use PHPUnit_Framework_Assert as Assertions;
 
 /**
  * Class RestContext
@@ -72,7 +74,7 @@ class RestContext extends BehatContext
      */
     public function thatIWantToFindTheIdentifiedBy($objectType, $id)
     {
-        $this->iRequest(sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id), 'GET');
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
     }
 
     /**
@@ -83,7 +85,7 @@ class RestContext extends BehatContext
      */
     public function thatIWantToFindA($objectType, TableNode $table)
     {
-        $this->iRequest(sprintf('%s', $this->getRestObjectFromObjectType($objectType)), 'GET');
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
     }
 
 //    /**
@@ -91,7 +93,7 @@ class RestContext extends BehatContext
 //     */
 //    public function thatIWantToMakeANew($objectType)
 //    {
-//        $this->iRequest(sprintf('%s', $this->getRestObjectFromObjectType($objectType)), 'POST');
+//        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
 //    }
 //
 //    /**
@@ -99,7 +101,7 @@ class RestContext extends BehatContext
 //     */
 //    public function thatIWantToDeleteA($objectType)
 //    {
-//        $this->iRequest(sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id), 'DELETE');
+//        $this->iSendARequestTo(RequestInterface::DELETE, sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
 //    }
 
     /**
@@ -108,35 +110,44 @@ class RestContext extends BehatContext
      *
      * @return string
      */
-    protected function getFormattedRequestUrlWithParams($requestUrl, array $paramList = array())
+    protected function getFormattedRequestUrlWithParamList($requestUrl, array $paramList = array())
     {
-        if (!empty($this->restObject)) {
-            return $requestUrl.'?'.http_build_query((array) $this->restObject);
+        if (!empty($paramList)) {
+            return sprintf('%s?%s', $requestUrl, http_build_query($paramList));
         }
 
         return $requestUrl;
     }
 
     /**
-     * @param string $requestUrl
-     * @param string $method
-     * @param array  $paramList
+     * @param string    $method
+     * @param string    $requestUrl
+     * @param TableNode $params
      *
      * @throws \Exception
      *
-     * @When /^I request "([^"]*)"$/
+     * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)"$/
+     * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)" with:$/
      */
-    public function iRequest($requestUrl, $method = 'GET', array $paramList = array())
+    public function iSendARequestTo($method, $requestUrl, TableNode $params = null)
     {
+        // Extract params
+        $paramList = array();
+        if ($params) {
+            foreach ($params->getHash() as $mapping) {
+                $paramList[$mapping['Field']] = $mapping['Value'];
+            }
+        }
+
         switch ($method) {
-            case 'GET':
-                $request = $this->client->get($this->getFormattedRequestUrlWithParams($requestUrl, $paramList));
+            case RequestInterface::GET:
+                $request = $this->client->get($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
                 break;
-            case 'POST':
-                $request = $this->client->post($this->getFormattedRequestUrlWithParams($requestUrl), null, (array) $paramList);
+            case RequestInterface::POST:
+                $request = $this->client->post($this->getFormattedRequestUrlWithParamList($requestUrl), null, $paramList);
                 break;
-            case 'DELETE':
-                $request = $this->client->delete($this->getFormattedRequestUrlWithParams($requestUrl, $paramList));
+            case RequestInterface::DELETE:
+                $request = $this->client->delete($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
                 break;
             default:
                 throw new Exception(sprintf('The HTTP method "%s" isn\'t supported', $method));
@@ -150,35 +161,34 @@ class RestContext extends BehatContext
         }
     }
 
-    /**
-     * @param string $propertyName
-     * @param string $typeString
-     *
-     * @throws \Exception
-     *
-     * @Given /^the type of the "([^"]*)" property is ([^"]*)$/
-     */
-    public function theTypeOfThePropertyIsNumeric($propertyName, $typeString)
-    {
-        $data = json_decode($this->response->getBody(true));
-
-        if (!empty($data)) {
-            if (!isset($data->$propertyName)) {
-                throw new Exception("Property '".$propertyName."' is not set!\n");
-            }
-            // check our type
-            switch (strtolower($typeString)) {
-                case 'numeric':
-                    if (!is_numeric($data->$propertyName)) {
-                        throw new Exception("Property '".$propertyName."' is not of the correct type: ".$theTypeOfThePropertyIsNumeric."!\n");
-                    }
-                    break;
-            }
-
-        } else {
-            throw new Exception("Response was not JSON\n" . $this->response->getBody(true));
-        }
-    }
+//    /**
+//     * @param string $propertyName
+//     * @param string $typeString
+//     *
+//     * @throws \Exception
+//     *
+//     * @Given /^the type of the "([^"]*)" property is ([^"]*)$/
+//     */
+//    public function theTypeOfThePropertyIsNumeric($propertyName, $typeString)
+//    {
+//        $data = json_decode($this->response->getBody(true));
+//
+//        if (!empty($data)) {
+//            if (!isset($data->$propertyName)) {
+//                throw new Exception("Property '".$propertyName."' is not set!\n");
+//            }
+//            // check our type
+//            switch (strtolower($typeString)) {
+//                case 'numeric':
+//                    if (!is_numeric($data->$propertyName)) {
+//                        throw new Exception("Property '".$propertyName."' is not of the correct type: ".$theTypeOfThePropertyIsNumeric."!\n");
+//                    }
+//                    break;
+//            }
+//        } else {
+//            throw new Exception("Response was not JSON\n" . $this->response->getBody(true));
+//        }
+//    }
 
 //    /**
 //     * @Then /^echo last response$/
@@ -229,9 +239,7 @@ class RestContext extends BehatContext
      */
     public function theResponseStatusCodeShouldBe($httpStatus)
     {
-        if ((string) $this->response->getStatusCode() !== $httpStatus) {
-            throw new Exception('HTTP code does not match "'.$httpStatus.'" (actual: "'.$this->response->getStatusCode().'")');
-        }
+        Assertions::assertSame((int) $httpStatus, $this->response->getStatusCode());
     }
 
     /**
@@ -243,9 +251,7 @@ class RestContext extends BehatContext
      */
     public function theResponseReasonPhraseShouldBe($reasonPhrase)
     {
-        if ((string) $this->response->getReasonPhrase() !== $reasonPhrase) {
-            throw new Exception('HTTP reason phrase does not match "'.$reasonPhrase.'" (actual: "'.$this->response->getReasonPhrase().'")');
-        }
+        Assertions::assertSame($reasonPhrase, $this->response->getReasonPhrase());
     }
 
     /**
@@ -257,9 +263,7 @@ class RestContext extends BehatContext
      */
     public function theResponseHasAProperty($propertyName)
     {
-        if (!isset($this->getResponseBody()->$propertyName)) {
-            throw new Exception("Property '".$propertyName."' is not set!\n");
-        }
+        Assertions::assertTrue(isset($this->getResponseBody()->$propertyName));
     }
 
     /**
@@ -268,6 +272,7 @@ class RestContext extends BehatContext
      *
      * @throws \Exception
      *
+     * @Then /^the "([^"]*)" property equals ([^"]*)$/
      * @Then /^the "([^"]*)" property equals "([^"]*)"$/
      */
     public function thePropertyEquals($propertyName, $propertyValue)
@@ -276,8 +281,17 @@ class RestContext extends BehatContext
 
         $this->theResponseHasAProperty($propertyName);
 
-        if ($data->$propertyName != $propertyValue) {
-            throw new Exception('Property value mismatch! (given: "'.$propertyValue.'", match: "'.$data->$propertyName.'")');
+        switch (gettype($data->$propertyName)) {
+            case 'boolean':
+                if (true === $data->$propertyName) {
+                    Assertions::assertTrue($propertyValue);
+                } else {
+                    Assertions::assertTrue('false' == $propertyValue || 0 == $propertyValue);
+                }
+                break;
+            default:
+                Assertions::assertEquals($propertyValue, $data->$propertyName);
+                break;
         }
     }
 }
