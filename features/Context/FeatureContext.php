@@ -2,27 +2,14 @@
 
 namespace Context;
 
-use Behat\Behat\Context\BehatContext,
-    Behat\Behat\Exception\PendingException;
-use Behat\Gherkin\Node\PyStringNode,
-    Behat\Gherkin\Node\TableNode;
+use Behat\Behat\Context\BehatContext;
 use Guzzle\Service\Client;
-
-//
-// Require 3rd-party libraries here:
-//
-//   require_once 'PHPUnit/Autoload.php';
-//   require_once 'PHPUnit/Framework/Assert/Functions.php';
-//
 
 /**
  * Feature context.
  */
 class FeatureContext extends BehatContext
 {
-    /** @var array */
-    protected $parameters;
-
     /**
      * Initializes context with parameters from behat.yml.
      *
@@ -30,24 +17,6 @@ class FeatureContext extends BehatContext
      */
     public function __construct(array $parameters)
     {
-        $this->parameters = $parameters;
-
-        $this->useContext('RestContext', new RestContext($parameters, Client::factory(array('base_url' => $this->getParameter('base_url')))));
-    }
-
-    /**
-     * @param string $parameterName
-     *
-     * @return null
-     *
-     * @throws \Exception
-     */
-    public function getParameter($parameterName)
-    {
-        if (count($this->parameters) === 0) {
-            throw new \Exception('Parameters not loaded!');
-        } else {
-            return (isset($this->parameters[$parameterName]))? $this->parameters[$parameterName]:null;
-        }
+        $this->useContext('RestContext', new RestContext($parameters, Client::factory(array('base_url' => $parameters['base_url']))));
     }
 }
