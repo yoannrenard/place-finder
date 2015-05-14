@@ -6,6 +6,7 @@ use Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
 use Guzzle\Http\ClientInterface;
+use Guzzle\Http\Message\RequestInterface;
 use PHPUnit_Framework_Assert as Assertions;
 
 /**
@@ -73,7 +74,7 @@ class RestContext extends BehatContext
      */
     public function thatIWantToFindTheIdentifiedBy($objectType, $id)
     {
-        $this->iSendARequestTo('GET', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
     }
 
     /**
@@ -84,7 +85,7 @@ class RestContext extends BehatContext
      */
     public function thatIWantToFindA($objectType, TableNode $table)
     {
-        $this->iSendARequestTo('GET', sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
     }
 
 //    /**
@@ -92,7 +93,7 @@ class RestContext extends BehatContext
 //     */
 //    public function thatIWantToMakeANew($objectType)
 //    {
-//        $this->iSendARequestTo('POST', sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
+//        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
 //    }
 //
 //    /**
@@ -100,7 +101,7 @@ class RestContext extends BehatContext
 //     */
 //    public function thatIWantToDeleteA($objectType)
 //    {
-//        $this->iSendARequestTo('DELETE', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
+//        $this->iSendARequestTo(RequestInterface::DELETE, sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
 //    }
 
     /**
@@ -139,13 +140,13 @@ class RestContext extends BehatContext
         }
 
         switch ($method) {
-            case 'GET':
+            case RequestInterface::GET:
                 $request = $this->client->get($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
                 break;
-            case 'POST':
+            case RequestInterface::POST:
                 $request = $this->client->post($this->getFormattedRequestUrlWithParamList($requestUrl), null, $paramList);
                 break;
-            case 'DELETE':
+            case RequestInterface::DELETE:
                 $request = $this->client->delete($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
                 break;
             default:
