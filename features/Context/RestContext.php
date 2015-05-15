@@ -81,13 +81,13 @@ class RestContext extends BehatContext
 
     /**
      * @param string    $objectType
-     * @param TableNode $paramTable
+     * @param TableNode $paramTableNode
      *
      * @Given /^that I want to find a "([^"]*)" with:$/
      */
-    public function thatIWantToFindA($objectType, TableNode $paramTable)
+    public function thatIWantToFindA($objectType, TableNode $paramTableNode)
     {
-        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), $paramTable);
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), $paramTableNode);
     }
 
 //    /**
@@ -124,19 +124,19 @@ class RestContext extends BehatContext
     /**
      * @param string    $method
      * @param string    $requestUrl
-     * @param TableNode $paramTable
+     * @param TableNode $paramTableNode
      *
      * @throws \Exception
      *
      * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)"$/
      * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)" with:$/
      */
-    public function iSendARequestTo($method, $requestUrl, TableNode $paramTable = null)
+    public function iSendARequestTo($method, $requestUrl, TableNode $paramTableNode = null)
     {
         // Extract params
         $paramList = array();
-        if ($paramTable) {
-            foreach ($paramTable->getHash() as $mapping) {
+        if ($paramTableNode) {
+            foreach ($paramTableNode->getHash() as $mapping) {
                 $paramList[$mapping['Field']] = $mapping['Value'];
             }
         }
