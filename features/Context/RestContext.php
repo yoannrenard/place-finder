@@ -13,6 +13,8 @@ use PHPUnit_Framework_Assert as Assertions;
  * Class RestContext
  *
  * @package Context
+ *
+ * todo Allow other format than json, xml, ...
  */
 class RestContext extends BehatContext
 {
@@ -79,13 +81,13 @@ class RestContext extends BehatContext
 
     /**
      * @param string    $objectType
-     * @param TableNode $table
+     * @param TableNode $paramTable
      *
      * @Given /^that I want to find a "([^"]*)" with:$/
      */
-    public function thatIWantToFindA($objectType, TableNode $table)
+    public function thatIWantToFindA($objectType, TableNode $paramTable)
     {
-        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), $paramTable);
     }
 
 //    /**
@@ -122,19 +124,19 @@ class RestContext extends BehatContext
     /**
      * @param string    $method
      * @param string    $requestUrl
-     * @param TableNode $params
+     * @param TableNode $paramTable
      *
      * @throws \Exception
      *
      * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)"$/
      * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)" with:$/
      */
-    public function iSendARequestTo($method, $requestUrl, TableNode $params = null)
+    public function iSendARequestTo($method, $requestUrl, TableNode $paramTable = null)
     {
         // Extract params
         $paramList = array();
-        if ($params) {
-            foreach ($params->getHash() as $mapping) {
+        if ($paramTable) {
+            foreach ($paramTable->getHash() as $mapping) {
                 $paramList[$mapping['Field']] = $mapping['Value'];
             }
         }
@@ -224,9 +226,9 @@ class RestContext extends BehatContext
      */
     public function theResponseShouldBeJson()
     {
-        $data = $this->getResponseBody();
-        if (empty($data)) {
-            throw new Exception("Response was not JSON\n" . $this->response/*$this->response->getBody(true)*/);
+        $data = $this->getResponseBody('json');
+        if (!is_array($data) && empty($data)) {
+            throw new Exception(sprintf("Response was not JSON:%s%s", PHP_EOL, $this->response->getBody(true)));
         }
     }
 
@@ -293,5 +295,14 @@ class RestContext extends BehatContext
                 Assertions::assertEquals($propertyValue, $data->$propertyName);
                 break;
         }
+    }
+
+    /**
+     * @Given /^the response should contains (\d+) results$/
+     */
+    public function theResponseShouldContainsResults($nbResult)
+    {
+        Assertions::assertTrue(is_array($this->getResponseBody()));
+        Assertions::assertEquals($nbResult, count($this->getResponseBody()));
     }
 }

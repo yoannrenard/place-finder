@@ -16,12 +16,18 @@ class PlaceManager extends AbstractManager
      */
     public function getAllFiltered(array $criteria = array())
     {
-        return $this->entityManager
+        $qb = $this->entityManager
             ->createQueryBuilder('p')
             ->select('p')
             ->from($this->class, 'p')
-            ->innerJoin('p.placeCategories', 'pc')
-            ->getQuery()
+            ->innerJoin('p.placeCategories', 'pc');
+
+        if ('' != $criteria['online']) {
+            $qb->where('p.isOnline = :isOnline')
+                ->setParameter('isOnline', (boolean) $criteria['online']);
+        }
+
+        return $qb->getQuery()
             ->getResult();
     }
 }

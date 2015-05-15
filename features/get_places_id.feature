@@ -37,19 +37,22 @@ Feature: Place-finder API /places/{id}
     And the response reasonPhrase should be "Not Found"
 
 #  /places?...=...&...=...
-#  Scenario: Finding an existing place by array
-#    Given that I want to find a "Place" with:
-#      | Field | Value |
-#      | id    | 1     |
-#    Then the response status code should be 200
-#    And the response should be JSON
-#    And the "id" property equals "1"
-#    And the "create_dt" property equals "2014-12-29T15:25:15+0000"
-#    And the "update_dt" property equals "2014-12-29T15:25:15+0000"
-#    And the "name" property equals "The John Snow"
-#    And the "latitude" property equals "51.513389"
-#    And the "longitude" property equals "-0.136561"
-#    And the "is_online" property equals "0"
+  Scenario: Finding an existing place by array
+    Given that I want to find a "Place" with:
+      | Field    | Value |
+      | isOnline | 0     |
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response should contains 2 results
+
+#  /places?...=...&...=...
+  Scenario: Finding an existing place by array
+    Given that I want to find a "Place" with:
+      | Field    | Value |
+      | isOnline | 1     |
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response should contains 0 results
 
 #  Scenario: Deleting a User
 #    Given that I want to delete a "User"

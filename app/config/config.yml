@@ -80,3 +80,4 @@ fos_rest:
             xml:  true
     routing_loader:
         default_format: json
+    param_fetcher_listener: true
