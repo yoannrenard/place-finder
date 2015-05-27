@@ -2,18 +2,14 @@
 
 namespace PlaceFinder\Bundle\APIBundle\Controller;
 
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use PlaceFinder\Bundle\DomainBundle\Entity\Place;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 /**
  * Class PlaceController
@@ -39,8 +35,6 @@ class PlaceController extends Controller
      *
      * @Route("/places", name="api_places_get")
      * @Method("GET")
-     *
-     * @QueryParam(name="online", requirements="(0|1)", description="The results should be online or not")
      *
      * @ApiDoc(
      *  resource=true,
@@ -192,7 +186,8 @@ class PlaceController extends Controller
             }
         }
 
-        return $this->handleView($this->onCreatePlaceError($placeForm));
+        die('merde');
+//        return $this->handleView($this->onCreatePlaceError($placeForm));
     }
 //
 //    /**
