@@ -1,0 +1,7 @@
+PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategory:
+    properties:
+        id:
+            type: integer
+        name:
+            type: string
+#            groups: [newsletter, newsletter-detailed]

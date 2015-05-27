@@ -24,6 +24,14 @@ Place-finder REST API
 ## Road map
 
 - Oauth
-- Create place
 - Edit place
 - Delete place
+- gestion du format de la reponse dans le header
+- pagination
+- HATEOAS
+- JSON-LD
+- format
+- API qui retourne la liste des champs pour editer/créer une place
+-
+-
+-

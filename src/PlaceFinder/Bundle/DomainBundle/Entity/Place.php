@@ -125,7 +125,7 @@ class Place
      *
      * @return $this
      */
-    public function setCreateDt(DateTime $createDt)
+    public function setCreateDt(DateTime $createDt = null)
     {
         $this->createDt = $createDt;
 
@@ -145,7 +145,7 @@ class Place
      *
      * @return $this
      */
-    public function setUpdateDt(DateTime $updateDt)
+    public function setUpdateDt(DateTime $updateDt = null)
     {
         $this->updateDt = $updateDt;
 
@@ -222,10 +222,14 @@ class Place
 
     /**
      * @param DateTime $deletedAt
+     *
+     * @return $this
      */
-    public function setDeletedAt(DateTime $deletedAt)
+    public function setDeletedAt(DateTime $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
     }
 
     /**

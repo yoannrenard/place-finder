@@ -27,7 +27,8 @@
         "gedmo/doctrine-extensions": "~2.3",
         "friendsofsymfony/rest-bundle": "~1.4",
         "jms/serializer-bundle": "0.13.*",
-        "nelmio/api-doc-bundle": "^2.8"
+        "nelmio/api-doc-bundle": "^2.8",
+        "phake/phake": "^2.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

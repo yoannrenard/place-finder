@@ -2,6 +2,8 @@
 
 namespace PlaceFinder\Bundle\DomainBundle\Manager;
 
+use PlaceFinder\Bundle\DomainBundle\Entity\Place;
+
 /**
  * Class PlaceManager
  *
@@ -22,12 +24,21 @@ class PlaceManager extends AbstractManager
             ->from($this->class, 'p')
             ->innerJoin('p.placeCategories', 'pc');
 
-        if ('' != $criteria['online']) {
+        if (isset($criteria['online']) && '' != $criteria['online']) {
             $qb->where('p.isOnline = :isOnline')
                 ->setParameter('isOnline', (boolean) $criteria['online']);
         }
 
         return $qb->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Place $place
+     */
+    public function save(Place $place)
+    {
+        $this->entityManager->persist($place);
+        $this->entityManager->flush($place);
     }
 }
