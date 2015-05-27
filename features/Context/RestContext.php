@@ -3,6 +3,7 @@
 namespace Context;
 
 use Behat\Behat\Context\BehatContext;
+use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
 use Guzzle\Http\ClientInterface;
@@ -87,24 +88,51 @@ class RestContext extends BehatContext
      */
     public function thatIWantToFindA($objectType, TableNode $paramTableNode)
     {
-        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), $paramTableNode);
+        // Extract params
+        $paramList = array();
+        if ($paramTableNode) {
+            foreach ($paramTableNode->getHash() as $mapping) {
+                $paramList[$mapping['Field']] = $mapping['Value'];
+            }
+        }
+
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), $paramList);
     }
 
-//    /**
-//     * @Given /^that I want to make a new "([^"]*)"$/
-//     */
-//    public function thatIWantToMakeANew($objectType)
-//    {
-//        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', $this->getRestObjectFromObjectType($objectType)));
-//    }
-//
-//    /**
-//     * @Given /^that I want to delete the "([^"]*) identified by "([^"]*)"$/
-//     */
-//    public function thatIWantToDeleteA($objectType)
-//    {
-//        $this->iSendARequestTo(RequestInterface::DELETE, sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
-//    }
+    /**
+     * @Given /^that I want to create a new "([^"]*)" with json:$/
+     */
+    public function thatIWantToCreateANewWithJson($objectType, PyStringNode $string)
+    {
+        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), json_decode($string->getRaw(), true));
+    }
+
+    /**
+     * @Given /^that I want to update partially the "([^"]*)" identified by "([^"]*)" with json:$/
+     */
+    public function thatIWantToUpdatePartiallyTheIdentifiedByWithJson($objectType, $id, PyStringNode $string)
+    {
+//        $this->iSendARequestTo(RequestInterface::PATCH, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), json_decode($string->getRaw(), true));
+        var_dump(RequestInterface::PATCH, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), json_decode($string->getRaw(), true));
+        $this->iSendARequestTo(RequestInterface::PATCH, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), json_decode($string->getRaw(), true));
+    }
+
+    /**
+     * @Given /^that I want to update the "([^"]*)" identified by "([^"]*)" with json:$/
+     */
+    public function thatIWantToUpdateTheIdentifiedByWithJson($objectType, $id, PyStringNode $string)
+    {
+        $this->iSendARequestTo(RequestInterface::PUT, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), json_decode($string->getRaw(), true));
+//        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), json_decode($string->getRaw(), true));
+    }
+
+    /**
+     * @Given /^that I want to delete the "([^"]*)" identified by "([^"]*)"$/
+     */
+    public function thatIWantToDeleteTheIdentifiedBy($objectType, $id)
+    {
+        $this->iSendARequestTo(RequestInterface::DELETE, sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id));
+    }
 
     /**
      * @param string $requestUrl
@@ -122,24 +150,17 @@ class RestContext extends BehatContext
     }
 
     /**
-     * @param string    $method
-     * @param string    $requestUrl
-     * @param TableNode $paramTableNode
+     * @param string $method
+     * @param string $requestUrl
+     * @param array  $paramList
      *
      * @throws \Exception
      *
      * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)"$/
-     * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)" with:$/
      */
-    public function iSendARequestTo($method, $requestUrl, TableNode $paramTableNode = null)
+    public function iSendARequestTo($method, $requestUrl, array $paramList = array())
     {
-        // Extract params
-        $paramList = array();
-        if ($paramTableNode) {
-            foreach ($paramTableNode->getHash() as $mapping) {
-                $paramList[$mapping['Field']] = $mapping['Value'];
-            }
-        }
+        $paramList['_format'] = 'json';
 
         switch ($method) {
             case RequestInterface::GET:
@@ -226,6 +247,8 @@ class RestContext extends BehatContext
      */
     public function theResponseShouldBeJson()
     {
+        Assertions::assertSame('application/json', (string) $this->response->getHeader('content-type'));
+
         $data = $this->getResponseBody('json');
         if (!is_array($data) && empty($data)) {
             throw new Exception(sprintf("Response was not JSON:%s%s", PHP_EOL, $this->response->getBody(true)));
@@ -241,6 +264,7 @@ class RestContext extends BehatContext
      */
     public function theResponseStatusCodeShouldBe($httpStatus)
     {
+        var_dump($this->response->getStatusCode(), $this->response->getReasonPhrase(), $this->response->getBody(true));
         Assertions::assertSame((int) $httpStatus, $this->response->getStatusCode());
     }
 

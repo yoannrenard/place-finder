@@ -1,7 +1,8 @@
 place_finder_api:
     resource: PlaceFinder\Bundle\APIBundle\Controller\PlaceController
     prefix:   /api
-    type:     rest
+#    type:     rest
+    type:     annotation
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"

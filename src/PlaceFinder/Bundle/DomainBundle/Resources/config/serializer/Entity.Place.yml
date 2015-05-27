@@ -1,0 +1,29 @@
+PlaceFinder\Bundle\DomainBundle\Entity\Place:
+    properties:
+        id:
+            type: integer
+        createDt:
+            type: DateTime<"Y-m-d H:i:s">
+#            groups: [newsletter, newsletter-detailed]
+        updateDt:
+            type: DateTime<"Y-m-d H:i:s">
+#            groups: [newsletter, newsletter-detailed]
+        name:
+            type: string
+#            groups: [newsletter, newsletter-detailed]
+        latitude:
+            type: double
+#            groups: [newsletter, newsletter-detailed]
+        longitude:
+            type: double
+#            groups: [newsletter, newsletter-detailed]
+        deletedAt:
+            type: DateTime<"Y-m-d H:i:s">
+#            groups: [newsletter, newsletter-detailed]
+        isOnline:
+            type: boolean
+#            groups: [newsletter-detailed]
+        placeCategories:
+            type: ArrayCollection<PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategory>
+#            serialized_name: blocks
+#            groups: [newsletter-detailed]
