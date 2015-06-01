@@ -162,12 +162,22 @@ class RestContext extends BehatContext
     {
         $paramList['_format'] = 'json';
 
+        $headers = array(
+            'Content-Type' => 'application/json',
+        );
+
         switch ($method) {
             case RequestInterface::GET:
                 $request = $this->client->get($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
                 break;
             case RequestInterface::POST:
-                $request = $this->client->post($this->getFormattedRequestUrlWithParamList($requestUrl), null, $paramList);
+                $request = $this->client->post($this->getFormattedRequestUrlWithParamList($requestUrl), $headers, $paramList);
+                break;
+            case RequestInterface::PUT:
+                $request = $this->client->put($this->getFormattedRequestUrlWithParamList($requestUrl), $headers, $paramList);
+                break;
+            case RequestInterface::PATCH:
+                $request = $this->client->patch($this->getFormattedRequestUrlWithParamList($requestUrl), $headers, $paramList);
                 break;
             case RequestInterface::DELETE:
                 $request = $this->client->delete($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
