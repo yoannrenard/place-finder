@@ -85,7 +85,7 @@ class Place
      *
      * @ORM\Column(name="is_online", type="boolean", options={"default"=false})
      */
-    protected $isOnline;
+    protected $isOnline = false;
 
     /**
      * @ORM\ManyToMany(targetEntity="PlaceCategory", inversedBy="places")
@@ -99,7 +99,6 @@ class Place
     public function __construct()
     {
         $this->placeCategories = new ArrayCollection();
-        $this->isOnline        = false;
     }
 
     /**
