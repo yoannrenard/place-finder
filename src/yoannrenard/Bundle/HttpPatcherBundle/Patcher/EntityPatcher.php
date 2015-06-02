@@ -48,7 +48,7 @@ class EntityPatcher
             }
 
             if (!in_array($parameter['op'], self::$supportedOpList)) {
-                throw new InvalidOperationException(sprintf('The operation "%s" isn\'t supported yet', $parameter['op']));
+                throw new InvalidOperationException(sprintf('The operation "%s" isn\'t supported', $parameter['op']));
             }
 
 //            var_dump($parameter);
@@ -56,7 +56,7 @@ class EntityPatcher
             switch ($parameter['op']) {
                 case self::OP_REPLACE:
                     if (!isset($parameter['value'])) {
-                        throw new InvalidValueException(sprintf('The op "%s" isn\'t supported yet', $parameter['op']));
+                        throw new InvalidValueException(sprintf('The op "%s" isn\'t supported', $parameter['op']));
                     }
 
                     $properties = explode('/', $parameter['path']);
