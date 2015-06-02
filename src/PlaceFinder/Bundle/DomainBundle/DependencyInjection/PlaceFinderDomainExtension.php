@@ -23,8 +23,8 @@ class PlaceFinderDomainExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('form.xml');
         $loader->load('orm.xml');
+        $loader->load('provider.xml');
         $loader->load('updater.xml');
     }
 }
