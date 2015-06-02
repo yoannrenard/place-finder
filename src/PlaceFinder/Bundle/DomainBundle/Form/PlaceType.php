@@ -35,7 +35,8 @@ class PlaceType extends AbstractType
         $builder
             ->add('name')
             ->add('latitude')
-            ->add('longitude');
+            ->add('longitude')
+            ->add('isOnline');
     }
     
     /**
