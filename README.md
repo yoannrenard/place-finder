@@ -23,6 +23,7 @@ Place-finder REST API
 
 ## Road map
 
+- Return 201 Response when create
 - Oauth
 - Edit place
 - Delete place
@@ -30,8 +31,7 @@ Place-finder REST API
 - pagination
 - HATEOAS
 - JSON-LD
-- format
 - API qui retourne la liste des champs pour editer/créer une place
--
--
--
+- versionning API
+- refacto JMS_Serializer + return new Response
+- do not return place if deleted

@@ -4,12 +4,14 @@ namespace PlaceFinder\Bundle\APIBundle\Controller;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use PlaceFinder\Bundle\DomainBundle\Entity\Place;
-use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
  * Class PlaceController
@@ -18,6 +20,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  */
 class PlaceController extends Controller
 {
+    /**
+     * @param json $content
+     * @param int  $status
+     *
+     * @return Response
+     */
+    protected function jsonResponse($content, $status = Response::HTTP_OK)
+    {
+        return new Response($content, $status, array('Content-Type' => 'application/json'));
+    }
+
 //URL                           HTTP Method  Operation
 ///api/contacts                 GET          Returns an array of contacts
 ///api/contacts/:id             GET          Returns the contact with id of :id
@@ -46,7 +59,7 @@ class PlaceController extends Controller
     {
         $placeList = $this->container->get('place_finder_domain.manager.place')->getAllFiltered($request->query->all());
 
-        return new Response($this->get('jms_serializer')->serialize($placeList, 'json'), 200, array('Content-Type' => 'application/json'));
+        return $this->jsonResponse($this->get('jms_serializer')->serialize($placeList, 'json'));
     }
 
     /**
@@ -56,10 +69,7 @@ class PlaceController extends Controller
      *
      * @return Response
      *
-     * @Route("/places/{id}", name="api_place_get",
-     *      requirements={
-     *         "id": "\d+"
-     *     })
+     * @Route("/places/{id}", name="api_place_get", requirements={"id": "\d+"})
      * @Method("GET")
      *
      * @ApiDoc(
@@ -81,7 +91,7 @@ class PlaceController extends Controller
      */
     public function getPlaceAction(Place $place)
     {
-        return new Response($this->get('jms_serializer')->serialize($place, 'json'), 200, array('Content-Type' => 'application/json'));
+        return $this->jsonResponse($this->get('jms_serializer')->serialize($place, 'json'));
     }
 
     /**
@@ -90,6 +100,8 @@ class PlaceController extends Controller
      * @param Request $request
      *
      * @return Response
+     *
+     * @throws MethodNotAllowedException
      *
      * @Route("/places", name="api_place_post")
      * @Method("POST")
@@ -101,111 +113,128 @@ class PlaceController extends Controller
      */
     public function postPlacesAction(Request $request)
     {
-        $place = new Place();
+        $serializer = $this->get('jms_serializer');
 
-        return $this->updatePlace($request, $place);
+        if (Request::METHOD_POST === $request->getMethod()) {
+            $place = $serializer->deserialize($request->getContent(), 'PlaceFinder\Bundle\DomainBundle\Entity\Place', 'json');
+
+            $errors = $this->get('validator')->validate($place);
+            if (0 == count($errors)) {
+                $this->get('place_finder_domain.manager.place')->save($place);
+            } else {
+                return $this->jsonResponse(
+                    $serializer->serialize(array('violations' => $errors), 'json'),
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+        } else {
+            throw new MethodNotAllowedException(sprintf('The method "%s" is not allowed', $request->getMethod()));
+        }
+
+        return $this->jsonResponse(
+            $serializer->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json'),
+            Response::HTTP_CREATED
+        );
     }
 
     /**
      * Updates the contact with id of :id
      *
+     * @param Place   $place
      * @param Request $request
      *
      * @return Response
      *
-     * @Route("/places/{id}", name="api_place_put",
-     *      requirements={
-     *         "id": "\d+"
-     *     })
+     * @throws NotFoundHttpException
+     * @throws MethodNotAllowedException
+     *
+     * @Route("/places/{id}", name="api_place_put", requirements={"id": "\d+"})
      * @Method("PUT")
      */
     public function putPlacesAction(Place $place, Request $request)
     {
-        return $this->updatePlace($request, $place);
+        $serializer = $this->get('jms_serializer');
+
+        if (Request::METHOD_PUT === $request->getMethod()) {
+            $placeUpdated = $serializer->deserialize($request->getContent(), 'PlaceFinder\Bundle\DomainBundle\Entity\Place', 'json');
+
+//            var_dump($placeUpdated);die;
+
+            if ($place->getId() != $placeUpdated->getId()) {
+                throw new NotFoundHttpException(sprintf('The id #%s doesn`t correspond', $placeUpdated->getId()));
+            }
+
+            $errors = $this->get('validator')->validate($placeUpdated);
+            if (0 == count($errors)) {
+                $this->get('place_finder_domain.manager.place')->save($placeUpdated);
+            } else {
+                return $this->jsonResponse(
+                    $serializer->serialize(array('violations' => $errors), 'json'),
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+        } else {
+            throw new MethodNotAllowedException(sprintf('The method "%s" is not allowed', $request->getMethod()));
+        }
+
+        return $this->jsonResponse(
+            $serializer->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json'),
+            Response::HTTP_CREATED
+        );
     }
 
     /**
      * Partially updates the contact with id of :id
      *
-     * @param Place   $id
+     * @param Place   $place
      * @param Request $request
      *
      * @return Response
      *
-     * @Route("/places/{id}", name="api_place_patch",
-     *      requirements={
-     *         "id": "\d+"
-     *     })
+     * @throws MethodNotAllowedException
+     *
+     * @Route("/places/{id}", name="api_place_patch", requirements={"id": "\d+"})
      * @Method("PATCH")
      */
     public function patchPlaceAction(Place $place, Request $request)
     {
+        if (Request::METHOD_PATCH === $request->getMethod()) {
+            $placeUpdated = $this->get('yoannrenard_http_patcher.patcher.entity')->update($place, json_decode($request->getContent(), true));
 
-        die;
-        $place = new Place();
-
-
-
-        return $this->updatePlace($request, $place);
-    }
-
-//    /**
-//     * Deletes the contact with id of :id
-//     *
-//     * @param Place $place
-//     *
-//     * @Route("/places/{id}", name="api_place_delete",
-//     *      requirements={
-//     *         "id": "\d+"
-//     *     })
-//     * @Method("DELETE")
-//     */
-//    public function deletePlaceAction(Place $place)
-//    {
-//        $this->get('place_finder_domain.updater.soft_delete_place')->softDelete($place);
-//        $this->get('place_finder_domain.manager.place')->save($place);
-//    }
-//
-    /**
-     * @param Request $request
-     * @param Place   $place
-     *
-     * @return Response
-     */
-    protected function updatePlace(Request $request, Place $place)
-    {
-        $placeForm = $this->createForm($this->get('place_finder_domain.form.place'), $place);
-
-        if (Request::METHOD_POST === $request->getMethod()) {
-            $placeForm->submit($request);
-            if ($placeForm->isValid()) {
-                return new Response('yes', Response::HTTP_NOT_FOUND);
-                $this->get('place_finder_domain.manager.place')->save($place);
-
-                return $this->getPlaceAction($place);
+            $errors = $this->get('validator')->validate($placeUpdated);
+            if (0 == count($errors)) {
+                $this->get('place_finder_domain.manager.place')->save($placeUpdated);
+            } else {
+                return $this->jsonResponse(
+                    $this->get('jms_serializer')->serialize(array('violations' => $errors), 'json'),
+                    Response::HTTP_BAD_REQUEST
+                );
             }
+        } else {
+            throw new MethodNotAllowedException(sprintf('The method "%s" is not allowed', $request->getMethod()));
         }
 
-        die('merde');
-//        return $this->handleView($this->onCreatePlaceError($placeForm));
+        return $this->jsonResponse(
+            $this->get('jms_serializer')->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json'),
+            Response::HTTP_CREATED
+        );
     }
-//
-//    /**
-//     * Returns a HTTP_BAD_REQUEST response when the form submission fails.
-//     *
-//     * @param FormInterface $form
-//     *
-//     * @return View
-//     */
-//    protected function onCreatePlaceError(FormInterface $form)
-//    {
-//        $view = View::create()
-//            ->setStatusCode(Codes::HTTP_BAD_REQUEST)
-//            ->setData(array(
-//                'form' => $form,
-//            ))
-//            ->setTemplate(new TemplateReference('PlaceFinderAPIBundle', 'Place', 'new'));
-//
-//        return $view;
-//    }
+
+    /**
+     * Deletes the contact with id of :id
+     *
+     * @param Place $place
+     *
+     * @return Response
+     *
+     * @Route("/places/{id}", name="api_place_delete", requirements={"id": "\d+"})
+     * @Method("DELETE")
+     */
+    public function deletePlaceAction(Place $place)
+    {
+        $this->get('place_finder_domain.updater.soft_delete_place')->softDelete($place);
+        $this->get('place_finder_domain.manager.place')->save($place);
+
+        return new JsonResponse('', Response::HTTP_NO_CONTENT);
+    }
 }

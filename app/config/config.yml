@@ -67,16 +67,6 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
-# FOSRest
-fos_rest:
-    view:
-        formats:
-            json: true
-            xml:  false # not supported yet
-    routing_loader:
-        default_format: json
-    param_fetcher_listener: true
-
 # NelmioApiDoc
 nelmio_api_doc:
     cache:
