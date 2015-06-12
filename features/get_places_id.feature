@@ -3,11 +3,11 @@ Feature: Place-finder API /places/{id}
   As an Advertiser
   I need to have a working dashboard
 
-##  /places?...=...&...=...
+#  /places?...=...&...=...
   Scenario: Finding an existing place by array
     Given that I want to find a "Place" with:
-      | Field  | Value |
-      | online | 0     |
+      | Field     | Value |
+      | is_online | 0     |
     Then the response status code should be 200
     And the response should be JSON
     And the response should contains 2 results
@@ -15,8 +15,8 @@ Feature: Place-finder API /places/{id}
 #  /places?...=...&...=...
   Scenario: Finding an existing place by array
     Given that I want to find a "Place" with:
-      | Field  | Value |
-      | online | 1     |
+      | Field     | Value |
+      | is_online | 1     |
     Then the response status code should be 200
     And the response should be JSON
     And the response should contains 0 results
@@ -59,16 +59,12 @@ Feature: Place-finder API /places/{id}
     Given that I want to create a new "Place" with json:
     """
       {
-        "placefinder_bundle_domainbundle_place": {
-          "name": "AWin",
-          "latitude": 51.5082339,
-          "longitude": -0.0673449
-        }
+        "name": "AWin",
+        "latitude": 51.5082339,
+        "longitude": -0.0673449
       }
     """
-#    Then the response status code should be 201
-#    And that I want to find the "Place" identified by "3"
-    Then the response status code should be 200
+    Then the response status code should be 201
     And the response should be JSON
     And the "id" property equals 3
     And the "name" property equals "AWin"
@@ -76,7 +72,26 @@ Feature: Place-finder API /places/{id}
     And the "longitude" property equals -0.0673449
     And the "is_online" property equals false
 
-# Update a place
+# Create a new place
+  Scenario: Create a new place
+    Given that I want to create a new "Place" with json:
+    """
+      {
+        "name": "AWin",
+        "latitude": 51.5082339,
+        "longitude": -0.0673449,
+        "is_online": 1
+      }
+    """
+    Then the response status code should be 201
+    And the response should be JSON
+    And the "id" property equals 4
+    And the "name" property equals "AWin"
+    And the "latitude" property equals 51.5082339
+    And the "longitude" property equals -0.0673449
+    And the "is_online" property equals true
+
+# Update a place (PARTIALLY)
   Scenario: Update PARTIALLY a place
     Given that I want to update partially the "Place" identified by "3" with json:
     """
@@ -126,8 +141,7 @@ Feature: Place-finder API /places/{id}
 #    And the "longitude" property equals -0.0673449
 #    And the "is_online" property equals true
 
-# Soft delete a place
+#Soft delete a place
 #  Scenario: Soft deleting a place
 #    Given that I want to delete the "Place" identified by "3"
-#    And that I want to find the "Place" identified by "3"
-#    Then the response status code should be 404
+#    Then the response status code should be 204

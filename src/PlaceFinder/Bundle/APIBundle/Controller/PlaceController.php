@@ -31,13 +31,13 @@ class PlaceController extends Controller
         return new Response($content, $status, array('Content-Type' => 'application/json'));
     }
 
-//URL                           HTTP Method  Operation
-///api/contacts                 GET          Returns an array of contacts
-///api/contacts/:id             GET          Returns the contact with id of :id
-///api/contacts                 POST         Adds a new contact and return it with an id attribute added
-///api/contacts/:id             PUT          Updates the contact with id of :id
-///api/contacts/:id             PATCH        Partially updates the contact with id of :id
-///api/contacts/:id             DELETE       Deletes the contact with id of :id
+//  URL                           HTTP Method  Operation
+//  /api/contacts                 GET          Returns an array of contacts
+//  /api/contacts/:id             GET          Returns the contact with id of :id
+//  /api/contacts                 POST         Adds a new contact and return it with an id attribute added
+//  /api/contacts/:id             PUT          Updates the contact with id of :id
+//  /api/contacts/:id             PATCH        Partially updates the contact with id of :id
+//  /api/contacts/:id             DELETE       Deletes the contact with id of :id
 
     /**
      * Returns a list of places
@@ -115,20 +115,15 @@ class PlaceController extends Controller
     {
         $serializer = $this->get('jms_serializer');
 
-        if (Request::METHOD_POST === $request->getMethod()) {
-            $place = $serializer->deserialize($request->getContent(), 'PlaceFinder\Bundle\DomainBundle\Entity\Place', 'json');
-
-            $errors = $this->get('validator')->validate($place);
-            if (0 == count($errors)) {
-                $this->get('place_finder_domain.manager.place')->save($place);
-            } else {
-                return $this->jsonResponse(
-                    $serializer->serialize(array('violations' => $errors), 'json'),
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
+        $place = $serializer->deserialize($request->getContent(), Place::class, 'json');
+        $errors = $this->get('validator')->validate($place);
+        if (0 == count($errors)) {
+            $this->get('place_finder_domain.manager.place')->save($place);
         } else {
-            throw new MethodNotAllowedException(sprintf('The method "%s" is not allowed', $request->getMethod()));
+            return $this->jsonResponse(
+                $serializer->serialize(array('violations' => $errors), 'json'),
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return $this->jsonResponse(
@@ -153,28 +148,23 @@ class PlaceController extends Controller
      */
     public function putPlacesAction(Place $place, Request $request)
     {
+        throw new AccessDeniedException();
+
         $serializer = $this->get('jms_serializer');
 
-        if (Request::METHOD_PUT === $request->getMethod()) {
-            $placeUpdated = $serializer->deserialize($request->getContent(), 'PlaceFinder\Bundle\DomainBundle\Entity\Place', 'json');
+        $placeUpdated = $serializer->deserialize($request->getContent(), Place::class, 'json');
+        if ($place->getId() != $placeUpdated->getId()) {
+            throw new NotFoundHttpException(sprintf('The id #%s doesn`t correspond', $placeUpdated->getId()));
+        }
 
-//            var_dump($placeUpdated);die;
-
-            if ($place->getId() != $placeUpdated->getId()) {
-                throw new NotFoundHttpException(sprintf('The id #%s doesn`t correspond', $placeUpdated->getId()));
-            }
-
-            $errors = $this->get('validator')->validate($placeUpdated);
-            if (0 == count($errors)) {
-                $this->get('place_finder_domain.manager.place')->save($placeUpdated);
-            } else {
-                return $this->jsonResponse(
-                    $serializer->serialize(array('violations' => $errors), 'json'),
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
+        $errors = $this->get('validator')->validate($placeUpdated);
+        if (0 == count($errors)) {
+            $this->get('place_finder_domain.manager.place')->save($placeUpdated);
         } else {
-            throw new MethodNotAllowedException(sprintf('The method "%s" is not allowed', $request->getMethod()));
+            return $this->jsonResponse(
+                $serializer->serialize(array('violations' => $errors), 'json'),
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return $this->jsonResponse(
@@ -198,20 +188,16 @@ class PlaceController extends Controller
      */
     public function patchPlaceAction(Place $place, Request $request)
     {
-        if (Request::METHOD_PATCH === $request->getMethod()) {
-            $placeUpdated = $this->get('yoannrenard_http_patcher.patcher.entity')->update($place, json_decode($request->getContent(), true));
+        $placeUpdated = $this->get('yoannrenard_http_patcher.patcher.entity')->update($place, json_decode($request->getContent(), true));
 
-            $errors = $this->get('validator')->validate($placeUpdated);
-            if (0 == count($errors)) {
-                $this->get('place_finder_domain.manager.place')->save($placeUpdated);
-            } else {
-                return $this->jsonResponse(
-                    $this->get('jms_serializer')->serialize(array('violations' => $errors), 'json'),
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
+        $errors = $this->get('validator')->validate($placeUpdated);
+        if (0 == count($errors)) {
+            $this->get('place_finder_domain.manager.place')->save($placeUpdated);
         } else {
-            throw new MethodNotAllowedException(sprintf('The method "%s" is not allowed', $request->getMethod()));
+            return $this->jsonResponse(
+                $this->get('jms_serializer')->serialize(array('violations' => $errors), 'json'),
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return $this->jsonResponse(
@@ -232,6 +218,8 @@ class PlaceController extends Controller
      */
     public function deletePlaceAction(Place $place)
     {
+        throw new AccessDeniedException();
+
         $this->get('place_finder_domain.updater.soft_delete_place')->softDelete($place);
         $this->get('place_finder_domain.manager.place')->save($place);
 

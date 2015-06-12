@@ -23,10 +23,7 @@ Place-finder REST API
 
 ## Road map
 
-- Return 201 Response when create
-- Oauth
-- Edit place
-- Delete place
+- Edit place (save the proposition up)
 - gestion du format de la reponse dans le header
 - pagination
 - HATEOAS
@@ -35,3 +32,9 @@ Place-finder REST API
 - versionning API
 - refacto JMS_Serializer + return new Response
 - do not return place if deleted
+- use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)
+- upgrade sf to 2.7 ;)
+- move the SoftDeleterPlaceUpdater into the entity (this is domain)
+- Oauth
+- admin
+- PlaceFilter with validation
