@@ -5,12 +5,12 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="place_finder_domain.form.place.class">PlaceFinder\Bundle\DomainBundle\Form\PlaceType</parameter>
+        <parameter key="place_finder_domain.provider.place.class">PlaceFinder\Bundle\DomainBundle\Provider\PlaceProvider</parameter>
     </parameters>
 
     <services>
-        <service id="place_finder_domain.form.place" class="%place_finder_domain.form.place.class%">
-            <argument>%place_finder_domain.place.class%</argument>
+        <service id="place_finder_domain.provider.place" class="%place_finder_domain.provider.place.class%">
+            <argument type="service" id="place_finder_domain.manager.place" />
         </service>
     </services>
 </container>

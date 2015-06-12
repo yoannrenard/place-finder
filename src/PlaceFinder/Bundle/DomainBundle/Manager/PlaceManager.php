@@ -24,9 +24,13 @@ class PlaceManager extends AbstractManager
             ->from($this->class, 'p')
             ->innerJoin('p.placeCategories', 'pc');
 
-        if (isset($criteria['online']) && '' != $criteria['online']) {
-            $qb->where('p.isOnline = :isOnline')
-                ->setParameter('isOnline', (boolean) $criteria['online']);
+        // Online
+        if (isset($criteria['is_online']) && '' != $criteria['is_online']) {
+            $qb->andWhere('p.isOnline = :isOnline')
+                ->setParameter('isOnline', (boolean) $criteria['is_online']);
+        } else {
+            $qb->andWhere('p.isOnline = :isOnline')
+                ->setParameter('isOnline', true);
         }
 
         return $qb->getQuery()

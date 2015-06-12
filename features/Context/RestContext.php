@@ -104,7 +104,7 @@ class RestContext extends BehatContext
      */
     public function thatIWantToCreateANewWithJson($objectType, PyStringNode $string)
     {
-        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), json_decode($string->getRaw(), true));
+        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), $string->getRaw());
     }
 
     /**
@@ -112,8 +112,6 @@ class RestContext extends BehatContext
      */
     public function thatIWantToUpdatePartiallyTheIdentifiedByWithJson($objectType, $id, PyStringNode $string)
     {
-//        $this->iSendARequestTo(RequestInterface::PATCH, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), json_decode($string->getRaw(), true));
-        var_dump(RequestInterface::PATCH, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), json_decode($string->getRaw(), true));
         $this->iSendARequestTo(RequestInterface::PATCH, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), json_decode($string->getRaw(), true));
     }
 
@@ -123,7 +121,6 @@ class RestContext extends BehatContext
     public function thatIWantToUpdateTheIdentifiedByWithJson($objectType, $id, PyStringNode $string)
     {
         $this->iSendARequestTo(RequestInterface::PUT, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), json_decode($string->getRaw(), true));
-//        $this->iSendARequestTo(RequestInterface::POST, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), json_decode($string->getRaw(), true));
     }
 
     /**
@@ -152,22 +149,33 @@ class RestContext extends BehatContext
     /**
      * @param string $method
      * @param string $requestUrl
+     * @param mixed  $body
      * @param array  $paramList
      *
      * @throws \Exception
      *
      * @Given /^I send a (GET|POST|DELETE) request to "([^"]*)"$/
      */
-    public function iSendARequestTo($method, $requestUrl, array $paramList = array())
+    public function iSendARequestTo($method, $requestUrl, $body = null, array $paramList = array())
     {
         $paramList['_format'] = 'json';
+
+        $headers = array(
+            'Content-Type' => 'application/json',
+        );
 
         switch ($method) {
             case RequestInterface::GET:
                 $request = $this->client->get($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
                 break;
             case RequestInterface::POST:
-                $request = $this->client->post($this->getFormattedRequestUrlWithParamList($requestUrl), null, $paramList);
+                $request = $this->client->post($this->getFormattedRequestUrlWithParamList($requestUrl), $headers, $body, $paramList);
+                break;
+            case RequestInterface::PUT:
+                $request = $this->client->put($this->getFormattedRequestUrlWithParamList($requestUrl), $headers, $body, $paramList);
+                break;
+            case RequestInterface::PATCH:
+                $request = $this->client->patch($this->getFormattedRequestUrlWithParamList($requestUrl), $headers, $body, $paramList);
                 break;
             case RequestInterface::DELETE:
                 $request = $this->client->delete($this->getFormattedRequestUrlWithParamList($requestUrl, $paramList));
@@ -183,46 +191,6 @@ class RestContext extends BehatContext
             $this->response = $e->getResponse();
         }
     }
-
-//    /**
-//     * @param string $propertyName
-//     * @param string $typeString
-//     *
-//     * @throws \Exception
-//     *
-//     * @Given /^the type of the "([^"]*)" property is ([^"]*)$/
-//     */
-//    public function theTypeOfThePropertyIsNumeric($propertyName, $typeString)
-//    {
-//        $data = json_decode($this->response->getBody(true));
-//
-//        if (!empty($data)) {
-//            if (!isset($data->$propertyName)) {
-//                throw new Exception("Property '".$propertyName."' is not set!\n");
-//            }
-//            // check our type
-//            switch (strtolower($typeString)) {
-//                case 'numeric':
-//                    if (!is_numeric($data->$propertyName)) {
-//                        throw new Exception("Property '".$propertyName."' is not of the correct type: ".$theTypeOfThePropertyIsNumeric."!\n");
-//                    }
-//                    break;
-//            }
-//        } else {
-//            throw new Exception("Response was not JSON\n" . $this->response->getBody(true));
-//        }
-//    }
-
-//    /**
-//     * @Then /^echo last response$/
-//     */
-//    public function echoLastResponse()
-//    {
-//        $this->printDebug(
-//            $this->requestUrl."\n\n".
-//            $this->response
-//        );
-//    }
 
     /**
      * @param string $format
@@ -264,7 +232,6 @@ class RestContext extends BehatContext
      */
     public function theResponseStatusCodeShouldBe($httpStatus)
     {
-        var_dump($this->response->getStatusCode(), $this->response->getReasonPhrase(), $this->response->getBody(true));
         Assertions::assertSame((int) $httpStatus, $this->response->getStatusCode());
     }
 
@@ -309,8 +276,9 @@ class RestContext extends BehatContext
 
         switch (gettype($data->$propertyName)) {
             case 'boolean':
+            case 'bool':
                 if (true === $data->$propertyName) {
-                    Assertions::assertTrue($propertyValue);
+                    Assertions::assertTrue(1 == $propertyValue || 'true' == $propertyValue);
                 } else {
                     Assertions::assertTrue('false' == $propertyValue || 0 == $propertyValue);
                 }

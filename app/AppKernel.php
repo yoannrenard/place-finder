@@ -30,7 +30,6 @@ class AppKernel extends Kernel
 
             // API
             new JMS\SerializerBundle\JMSSerializerBundle(),
-            new FOS\RestBundle\FOSRestBundle(),
             new PlaceFinder\Bundle\APIBundle\PlaceFinderAPIBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new yoannrenard\Bundle\HttpPatcherBundle\yoannrenardHttpPatcherBundle(),
