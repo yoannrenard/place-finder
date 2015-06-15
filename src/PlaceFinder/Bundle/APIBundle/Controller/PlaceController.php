@@ -31,14 +31,6 @@ class PlaceController extends Controller
         return new Response($content, $status, array('Content-Type' => 'application/json'));
     }
 
-//  URL                           HTTP Method  Operation
-//  /api/contacts                 GET          Returns an array of contacts
-//  /api/contacts/:id             GET          Returns the contact with id of :id
-//  /api/contacts                 POST         Adds a new contact and return it with an id attribute added
-//  /api/contacts/:id             PUT          Updates the contact with id of :id
-//  /api/contacts/:id             PATCH        Partially updates the contact with id of :id
-//  /api/contacts/:id             DELETE       Deletes the contact with id of :id
-
     /**
      * Returns a list of places
      *
