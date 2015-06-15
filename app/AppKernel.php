@@ -33,6 +33,7 @@ class AppKernel extends Kernel
             new PlaceFinder\Bundle\APIBundle\PlaceFinderAPIBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new yoannrenard\Bundle\HttpPatcherBundle\yoannrenardHttpPatcherBundle(),
+            new PlaceFinder\Bundle\AdminBundle\PlaceFinderAdminBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
