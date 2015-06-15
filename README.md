@@ -24,6 +24,8 @@ Place-finder REST API
 ## Road map
 
 - Edit place (save the proposition up)
+- PlaceUpdateProposal operation validator
+- PlaceUpdateProposal status validator
 - gestion du format de la reponse dans le header
 - pagination
 - HATEOAS - JSON-LD
@@ -36,4 +38,5 @@ Place-finder REST API
 - admin
 - PlaceFilter with validation
 - move PlaceManager->getAllFiltered() into repository
-- validation of the
+- use cnotroller as a service
+- remove PlaceFinder root dir
