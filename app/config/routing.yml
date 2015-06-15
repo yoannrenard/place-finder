@@ -1,3 +1,8 @@
+place_finder_admin:
+    resource: PlaceFinder\Bundle\AdminBundle\Controller\AdminController
+    prefix:   /admin
+    type:     annotation
+
 place_finder_api:
     resource: PlaceFinder\Bundle\APIBundle\Controller\PlaceController
     prefix:   /api
