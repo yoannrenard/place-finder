@@ -4,6 +4,7 @@ namespace PlaceFinder\Bundle\APIBundle\Controller;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use PlaceFinder\Bundle\DomainBundle\Entity\Place;
+use PlaceFinder\Bundle\DomainBundle\Entity\PlaceUpdateProposal;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -30,14 +31,6 @@ class PlaceController extends Controller
     {
         return new Response($content, $status, array('Content-Type' => 'application/json'));
     }
-
-//  URL                           HTTP Method  Operation
-//  /api/contacts                 GET          Returns an array of contacts
-//  /api/contacts/:id             GET          Returns the contact with id of :id
-//  /api/contacts                 POST         Adds a new contact and return it with an id attribute added
-//  /api/contacts/:id             PUT          Updates the contact with id of :id
-//  /api/contacts/:id             PATCH        Partially updates the contact with id of :id
-//  /api/contacts/:id             DELETE       Deletes the contact with id of :id
 
     /**
      * Returns a list of places
@@ -188,11 +181,13 @@ class PlaceController extends Controller
      */
     public function patchPlaceAction(Place $place, Request $request)
     {
-        $placeUpdated = $this->get('yoannrenard_http_patcher.patcher.entity')->update($place, json_decode($request->getContent(), true));
+        /** @var PlaceUpdateProposal $placeUpdateProposal */
+        $placeUpdateProposal = $this->get('jms_serializer')->deserialize($request->getContent(), PlaceUpdateProposal::class, 'json');
+        $placeUpdateProposal->setPlace($place);
 
-        $errors = $this->get('validator')->validate($placeUpdated);
+        $errors = $this->get('validator')->validate($placeUpdateProposal);
         if (0 == count($errors)) {
-            $this->get('place_finder_domain.manager.place')->save($placeUpdated);
+            $this->get('place_finder_domain.manager.place_update_proposal')->save($placeUpdateProposal);
         } else {
             return $this->jsonResponse(
                 $this->get('jms_serializer')->serialize(array('violations' => $errors), 'json'),
@@ -200,10 +195,7 @@ class PlaceController extends Controller
             );
         }
 
-        return $this->jsonResponse(
-            $this->get('jms_serializer')->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json'),
-            Response::HTTP_CREATED
-        );
+        return $this->jsonResponse('', Response::HTTP_CREATED);
     }
 
     /**

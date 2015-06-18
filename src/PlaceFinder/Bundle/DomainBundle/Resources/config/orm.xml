@@ -7,15 +7,21 @@
     <parameters>
         <!-- Entities -->
         <parameter key="place_finder_domain.place.class">PlaceFinder\Bundle\DomainBundle\Entity\Place</parameter>
+        <parameter key="place_finder_domain.place_update_proposal.class">PlaceFinder\Bundle\DomainBundle\Entity\PlaceUpdateProposal</parameter>
 
         <!-- Managers -->
         <parameter key="place_finder_domain.manager.place.class">PlaceFinder\Bundle\DomainBundle\Manager\PlaceManager</parameter>
+        <parameter key="place_finder_domain.manager.place_update_proposal.class">PlaceFinder\Bundle\DomainBundle\Manager\PlaceUpdateProposalManager</parameter>
     </parameters>
 
     <services>
         <service id="place_finder_domain.manager.place" class="%place_finder_domain.manager.place.class%">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument>%place_finder_domain.place.class%</argument>
+        </service>
+        <service id="place_finder_domain.manager.place_update_proposal" class="%place_finder_domain.manager.place_update_proposal.class%">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument>%place_finder_domain.place_update_proposal.class%</argument>
         </service>
     </services>
 </container>

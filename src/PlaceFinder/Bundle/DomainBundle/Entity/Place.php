@@ -94,11 +94,19 @@ class Place
     protected $placeCategories;
 
     /**
+     * @var PlaceUpdateProposal $placeUpdateProposals
+     *
+     * @ORM\OneToMany(targetEntity="PlaceUpdateProposal", mappedBy="place")
+     */
+    protected $placeUpdateProposals;
+
+    /**
      * Construct
      */
     public function __construct()
     {
-        $this->placeCategories = new ArrayCollection();
+        $this->placeCategories      = new ArrayCollection();
+        $this->placeUpdateProposals = new ArrayCollection();
     }
 
     /**
@@ -249,5 +257,57 @@ class Place
         $this->isOnline = $isOnline;
 
         return $this;
+    }
+
+    /**
+     * @param PlaceUpdateProposal $placeUpdateProposals
+     *
+     * @return $this
+     */
+    public function setPlaceUpdateProposals(PlaceUpdateProposal $placeUpdateProposals)
+    {
+        $this->placeUpdateProposals = $placeUpdateProposals;
+
+        return $this;
+    }
+
+    /**
+     * @return PlaceUpdateProposal
+     */
+    public function getPlaceUpdateProposals()
+    {
+        return $this->placeUpdateProposals;
+    }
+
+    /**
+     * @param PlaceCategory[] $placeCategories
+     *
+     * @return $this
+     */
+    public function setPlaceCategories($placeCategories)
+    {
+        $this->placeCategories = $placeCategories;
+
+        return $this;
+    }
+
+    /**
+     * @param PlaceCategory $placeCategory
+     *
+     * @return $this
+     */
+    public function addPlaceCategory(PlaceCategory $placeCategory)
+    {
+        $this->placeCategories->add($placeCategory);
+
+        return $this;
+    }
+
+    /**
+     * @return PlaceCategory
+     */
+    public function getPlaceCategories()
+    {
+        return $this->placeCategories;
     }
 }
