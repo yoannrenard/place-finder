@@ -310,4 +310,19 @@ class Place
     {
         return $this->placeCategories;
     }
+
+    /**
+     * @param \DateTime $deletedAt
+     *
+     * @return $this
+     */
+    public function softDelete(\DateTime $deletedAt = null)
+    {
+        $deletedAt = $deletedAt? $deletedAt:new \DateTime();
+
+        $this->setDeletedAt($deletedAt);
+        $this->setUpdateDt($deletedAt);
+
+        return $this;
+    }
 }

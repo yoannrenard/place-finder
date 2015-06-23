@@ -212,7 +212,7 @@ class PlaceController extends Controller
     {
         throw new AccessDeniedException();
 
-        $this->get('place_finder_domain.updater.soft_delete_place')->softDelete($place);
+        $place->softDelete();
         $this->get('place_finder_domain.manager.place')->save($place);
 
         return new JsonResponse('', Response::HTTP_NO_CONTENT);
