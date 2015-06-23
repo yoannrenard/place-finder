@@ -32,7 +32,6 @@ Place-finder REST API
 - API qui retourne la liste des champs pour editer/créer une place
 - versionning API
 - refacto JMS_Serializer + return new Response
-- use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)
 - Oauth
 - admin
 - PlaceFilter with validation
@@ -40,3 +39,4 @@ Place-finder REST API
 - use cnotroller as a service
 - remove PlaceFinder root dir
 + move the SoftDeleterPlaceUpdater into the entity (this is domain)
++ use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)

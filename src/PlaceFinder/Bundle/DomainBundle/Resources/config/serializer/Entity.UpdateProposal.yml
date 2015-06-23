@@ -2,13 +2,13 @@ PlaceFinder\Bundle\DomainBundle\Entity\UpdateProposal:
     properties:
         createDt:
             type: DateTime<"Y-m-d H:i:s">
-#            groups: [newsletter, newsletter-detailed]
+            groups: [default]
         operation:
             type: string
-#            groups: [newsletter, newsletter-detailed]
+            groups: [default]
         field:
             type: string
-#            groups: [newsletter, newsletter-detailed]
+            groups: [default]
         value:
             type: string
-#            groups: [newsletter, newsletter-detailed]
+            groups: [default]

@@ -2,6 +2,7 @@
 
 namespace PlaceFinder\Bundle\APIBundle\Controller;
 
+use JMS\Serializer\SerializationContext;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use PlaceFinder\Bundle\DomainBundle\Entity\Place;
 use PlaceFinder\Bundle\DomainBundle\Entity\PlaceUpdateProposal;
@@ -84,7 +85,10 @@ class PlaceController extends Controller
      */
     public function getPlaceAction(Place $place)
     {
-        return $this->jsonResponse($this->get('jms_serializer')->serialize($place, 'json'));
+        $context = new SerializationContext();
+        $context->setGroups(array('default'));
+
+        return $this->jsonResponse($this->get('jms_serializer')->serialize($place, 'json', $context));
     }
 
     /**
