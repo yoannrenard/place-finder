@@ -33,10 +33,10 @@ Place-finder REST API
 - versionning API
 - refacto JMS_Serializer + return new Response
 - use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)
-- move the SoftDeleterPlaceUpdater into the entity (this is domain)
 - Oauth
 - admin
 - PlaceFilter with validation
 - move PlaceManager->getAllFiltered() into repository
 - use cnotroller as a service
 - remove PlaceFinder root dir
++ move the SoftDeleterPlaceUpdater into the entity (this is domain)
