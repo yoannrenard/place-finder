@@ -2,7 +2,7 @@ PlaceFinder\Bundle\DomainBundle\Entity\PlaceUpdateProposal:
     properties:
         id:
             type: integer
-#            groups: [newsletter, newsletter-detailed]
+            groups: [default]
         place:
             exlude: true
-#            groups: [newsletter, newsletter-detailed]
+            groups: [default]

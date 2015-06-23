@@ -4,4 +4,4 @@ PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategory:
             type: integer
         name:
             type: string
-#            groups: [newsletter, newsletter-detailed]
+            groups: [Default]
