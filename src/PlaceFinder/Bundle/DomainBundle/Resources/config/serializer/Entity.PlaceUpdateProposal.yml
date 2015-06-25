@@ -1,8 +1,0 @@
-PlaceFinder\Bundle\DomainBundle\Entity\PlaceUpdateProposal:
-    properties:
-        id:
-            type: integer
-            groups: [default]
-        place:
-            exlude: true
-            groups: [default]

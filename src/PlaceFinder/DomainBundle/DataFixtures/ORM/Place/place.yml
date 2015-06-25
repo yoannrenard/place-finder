@@ -1,0 +1,17 @@
+---
+PlaceFinder\DomainBundle\Entity\Place:
+    TheJohnSnowPlace:
+        createDt:        2014-12-29 15:25:15
+        updateDt:        2014-12-29 15:25:15
+        name:            The John Snow
+        latitude:        51.513389
+        longitude:       -0.136561
+        placeCategories: [@PubPlaceCategory]
+        isOnline:        true
+    BarrioCentralPlace:
+        createDt:        2014-12-29 15:26:15
+        updateDt:        2014-12-29 15:26:15
+        name:            Barrio Central
+        latitude:        51.514133
+        longitude:       -0.136684
+        placeCategories: [@PubPlaceCategory, @BarPlaceCategory]

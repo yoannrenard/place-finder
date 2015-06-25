@@ -26,13 +26,13 @@ class AppKernel extends Kernel
             // Doctrine
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
-            new PlaceFinder\Bundle\DomainBundle\PlaceFinderDomainBundle(),
+            new PlaceFinder\DomainBundle\PlaceFinderDomainBundle(),
 
             // API
             new JMS\SerializerBundle\JMSSerializerBundle(),
-            new PlaceFinder\Bundle\APIBundle\PlaceFinderAPIBundle(),
+            new PlaceFinder\APIBundle\PlaceFinderAPIBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new PlaceFinder\Bundle\AdminBundle\PlaceFinderAdminBundle(),
+            new PlaceFinder\AdminBundle\PlaceFinderAdminBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

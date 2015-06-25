@@ -1,0 +1,14 @@
+PlaceFinder\DomainBundle\Entity\UpdateProposal:
+    properties:
+        createDt:
+            type: DateTime<"Y-m-d H:i:s">
+            groups: [default]
+        operation:
+            type: string
+            groups: [default]
+        field:
+            type: string
+            groups: [default]
+        value:
+            type: string
+            groups: [default]
