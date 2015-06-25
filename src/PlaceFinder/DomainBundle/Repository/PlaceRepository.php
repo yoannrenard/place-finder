@@ -12,4 +12,37 @@ use Doctrine\ORM\EntityRepository;
  */
 class PlaceRepository extends EntityRepository
 {
+    /**
+     * Finds entities by a set of criteria.
+     *
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
+     * @return array
+     */
+    public function getAllFiltered(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null)
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder('p')
+            ->select('p')
+            ->from($this->getClassName(), 'p')
+            ->innerJoin('p.placeCategories', 'pc');
+
+        // Online
+        if (isset($criteria['is_online']) && '' != $criteria['is_online']) {
+            $qb->andWhere('p.isOnline = :isOnline')
+                ->setParameter('isOnline', (boolean) $criteria['is_online']);
+        } else {
+            $qb->andWhere('p.isOnline = :isOnline')
+                ->setParameter('isOnline', true);
+        }
+
+
+        $qb->setFirstResult($offset);
+        $qb->setMaxResults($limit);
+
+        return $qb;
+    }
 }
