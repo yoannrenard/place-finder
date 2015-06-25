@@ -23,10 +23,10 @@ Place-finder REST API
 
 ## Road map
 
+- Get Places with parameters handler (default/valid/...)
 - PlaceUpdateProposal operation validator
 - PlaceUpdateProposal status validator
 - gestion du format de la reponse dans le header
-- pagination
 - HATEOAS - JSON-LD
 - API qui retourne la liste des champs pour editer/créer une place
 - versionning API
@@ -39,5 +39,6 @@ Place-finder REST API
 + move the SoftDeleterPlaceUpdater into the entity (this is domain)
 + use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)
 + Edit place (save the proposition up)
-- remove PlaceFinder root dir
++ remove PlaceFinder root dir
 + remove yoannrenard/...
++ pagination

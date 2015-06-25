@@ -15,3 +15,11 @@ PlaceFinder\DomainBundle\Entity\Place:
         latitude:        51.514133
         longitude:       -0.136684
         placeCategories: [@PubPlaceCategory, @BarPlaceCategory]
+    DummyPlace{1..100}:
+        createDt:        2014-12-29 15:26:15
+        updateDt:        2014-12-29 15:26:15
+        name:            Dummy <current()>
+        latitude:        51.514133
+        longitude:       -0.136684
+        placeCategories: [@BarPlaceCategory]
+        isOnline:        true
