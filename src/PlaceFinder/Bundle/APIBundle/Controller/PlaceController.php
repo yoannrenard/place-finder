@@ -53,7 +53,10 @@ class PlaceController extends Controller
     {
         $placeList = $this->container->get('place_finder_domain.manager.place')->getAllFiltered($request->query->all());
 
-        return $this->jsonResponse($this->get('jms_serializer')->serialize($placeList, 'json'));
+        $context = new SerializationContext();
+        $context->setGroups(array('default'));
+
+        return $this->jsonResponse($this->get('jms_serializer')->serialize($placeList, 'json', $context));
     }
 
     /**
@@ -123,8 +126,11 @@ class PlaceController extends Controller
             );
         }
 
+        $context = new SerializationContext();
+        $context->setGroups(array('default'));
+
         return $this->jsonResponse(
-            $serializer->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json'),
+            $serializer->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json', $context),
             Response::HTTP_CREATED
         );
     }
@@ -164,8 +170,11 @@ class PlaceController extends Controller
             );
         }
 
+        $context = new SerializationContext();
+        $context->setGroups(array('default'));
+
         return $this->jsonResponse(
-            $serializer->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json'),
+            $serializer->serialize($this->get('place_finder_domain.provider.place')->load($place->getId()), 'json', $context),
             Response::HTTP_CREATED
         );
     }
