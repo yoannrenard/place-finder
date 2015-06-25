@@ -33,7 +33,8 @@ class PlaceManager extends AbstractManager
                 ->setParameter('isOnline', true);
         }
 
-        return $qb->getQuery()
+        return $qb
+            ->getQuery()
             ->getResult();
     }
 
