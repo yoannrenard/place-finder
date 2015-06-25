@@ -10,7 +10,7 @@ Feature: Place-finder API /places/{id}
       | is_online | 0     |
     Then the response status code should be 200
     And the response should be JSON
-    And the response should contains 2 results
+    And the response should contains 1 results
 
 #  /places?...=...&...=...
   Scenario: Finding an existing place by array
@@ -19,7 +19,7 @@ Feature: Place-finder API /places/{id}
       | is_online | 1     |
     Then the response status code should be 200
     And the response should be JSON
-    And the response should contains 0 results
+    And the response should contains 1 results
 
 #  /places/1
   Scenario: Finding an existing place by id
@@ -32,7 +32,7 @@ Feature: Place-finder API /places/{id}
     And the "name" property equals "The John Snow"
     And the "latitude" property equals 51.513389
     And the "longitude" property equals -0.136561
-    And the "is_online" property equals false
+    And the "is_online" property equals true
 
 #  /places/1
   Scenario: Finding an existing place by id
@@ -45,7 +45,7 @@ Feature: Place-finder API /places/{id}
     And the "name" property equals "The John Snow"
     And the "latitude" property equals 51.513389
     And the "longitude" property equals -0.136561
-    And the "is_online" property equals false
+    And the "is_online" property equals true
 
 #  /places/0
   Scenario: Finding a no-existing place

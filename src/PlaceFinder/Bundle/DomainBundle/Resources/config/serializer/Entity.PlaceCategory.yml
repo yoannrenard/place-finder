@@ -4,4 +4,4 @@ PlaceFinder\Bundle\DomainBundle\Entity\PlaceCategory:
             type: integer
         name:
             type: string
-            groups: [Default]
+            groups: [default]

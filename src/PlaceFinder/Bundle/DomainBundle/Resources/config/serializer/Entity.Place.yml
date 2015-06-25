@@ -2,6 +2,7 @@ PlaceFinder\Bundle\DomainBundle\Entity\Place:
     properties:
         id:
             type: integer
+            groups: [default]
         createDt:
             type: DateTime<"Y-m-d H:i:s">
             groups: [default]
