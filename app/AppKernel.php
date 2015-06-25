@@ -32,7 +32,6 @@ class AppKernel extends Kernel
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new PlaceFinder\Bundle\APIBundle\PlaceFinderAPIBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new yoannrenard\Bundle\HttpPatcherBundle\yoannrenardHttpPatcherBundle(),
             new PlaceFinder\Bundle\AdminBundle\PlaceFinderAdminBundle(),
         );
 

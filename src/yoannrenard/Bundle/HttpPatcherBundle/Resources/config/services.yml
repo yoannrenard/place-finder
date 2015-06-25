@@ -1,3 +1,0 @@
-services:
-    yoannrenard_http_patcher.patcher.entity:
-        class: yoannrenard\Bundle\HttpPatcherBundle\Patcher\EntityPatcher

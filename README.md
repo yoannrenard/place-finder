@@ -36,7 +36,8 @@ Place-finder REST API
 - admin
 - PlaceFilter with validation
 - move PlaceManager->getAllFiltered() into repository
-- use cnotroller as a service
-- remove PlaceFinder root dir
 + move the SoftDeleterPlaceUpdater into the entity (this is domain)
 + use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)
+- use cnotroller as a service
+- remove PlaceFinder root dir
++ remove yoannrenard/...
