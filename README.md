@@ -23,7 +23,6 @@ Place-finder REST API
 
 ## Road map
 
-- Get Places with parameters handler (default/valid/...)
 - PlaceUpdateProposal operation validator
 - PlaceUpdateProposal status validator
 - gestion du format de la reponse dans le header
@@ -42,3 +41,4 @@ Place-finder REST API
 + remove PlaceFinder root dir
 + remove yoannrenard/...
 + pagination
++ Get Places with parameters handler (default/valid/...)
