@@ -29,11 +29,9 @@ Place-finder REST API
 - HATEOAS - JSON-LD
 - API qui retourne la liste des champs pour editer/créer une place
 - versionning API
-- refacto JMS_Serializer + return new Response
+- refacto JMS_Serializer + return new Response + Context
 - Oauth
 - admin
-- PlaceFilter with validation
-- move PlaceManager->getAllFiltered() into repository
 - use cnotroller as a service
 + move the SoftDeleterPlaceUpdater into the entity (this is domain)
 + use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)
@@ -42,3 +40,5 @@ Place-finder REST API
 + remove yoannrenard/...
 + pagination
 + Get Places with parameters handler (default/valid/...)
++ PlaceFilter with validation
++ move PlaceManager->getAllFiltered() into repository
