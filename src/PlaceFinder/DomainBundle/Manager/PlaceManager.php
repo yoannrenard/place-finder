@@ -3,6 +3,7 @@
 namespace PlaceFinder\DomainBundle\Manager;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use PlaceFinder\APIBundle\Filter\PlacesFilter;
 use PlaceFinder\DomainBundle\Entity\Place;
 
 /**
@@ -15,16 +16,18 @@ class PlaceManager extends AbstractManager
     /**
      * Finds entities by a set of criteria.
      *
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int|null   $limit
-     * @param int|null   $offset
+     * @param PlacesFilter $placesFilter
+     * @param array|null   $orderBy
+     * @param int|null     $page
+     * @param int|null     $limit
      *
      * @return array
      */
-    public function getAllFilteredAndPaginated(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null)
+    public function getAllFilteredAndPaginated(PlacesFilter $placesFilter, array $orderBy = null, $page, $limit)
     {
-        return new Paginator($this->repository->getAllFiltered($criteria, $orderBy, $limit, $offset));
+        $offset = ($page * $limit) - $limit;
+
+        return new Paginator($this->repository->getAllFiltered($placesFilter, $orderBy, $limit, $offset));
     }
 
     /**

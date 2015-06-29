@@ -4,6 +4,7 @@ namespace PlaceFinder\APIBundle\Controller;
 
 use JMS\Serializer\SerializationContext;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use PlaceFinder\APIBundle\Filter\PlacesFilter;
 use PlaceFinder\DomainBundle\Entity\Place;
 use PlaceFinder\DomainBundle\Entity\PlaceUpdateProposal;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -57,11 +58,20 @@ class PlaceController extends Controller
      */
     public function getPlacesAction(Request $request)
     {
-        $page   = $request->query->get('page',     self::PAGE_FIRST);
-        $limit  = $request->query->get('per_page', self::PAGE_LIMIT_DEFAULT);
-        $offset = ($page * $limit) - $limit;
+        $placesFilter = new PlacesFilter();
+        $placesFilter->setIsOnline($request->query->get('is_online'));
+        $placesFilter->setPage($request->query->get('page'), self::PAGE_FIRST);
+        $placesFilter->setPerPage($request->query->get('per_page'), self::PAGE_LIMIT_DEFAULT);
 
-        $placeListPaginated = $this->get('place_finder_domain.manager.place')->getAllFilteredAndPaginated($request->query->all(), null, $limit, $offset);
+        $errors = $this->get('validator')->validate($placesFilter);
+        if (0 > count($errors)) {
+            return $this->jsonResponse(
+                $this->get('jms_serializer')->serialize(array('violations' => $errors), 'json'),
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $placeListPaginated = $this->get('place_finder_domain.manager.place')->getAllFilteredAndPaginated($placesFilter, null, $placesFilter->getPage(), $placesFilter->getPerPage());
 
         $context = new SerializationContext();
         $context->setGroups(array('default'));
@@ -69,7 +79,7 @@ class PlaceController extends Controller
         return $this->jsonResponse(
             $this->get('jms_serializer')->serialize(iterator_to_array($placeListPaginated), 'json', $context),
             Response::HTTP_OK,
-            array('Link' => $this->get('place_finder_api.builder.http_header_link')->build('api_places_get', count($placeListPaginated), $page, $limit))
+            array('Link' => $this->get('place_finder_api.builder.http_header_link')->build('api_places_get', count($placeListPaginated), $placesFilter->getPage(), $placesFilter->getPerPage()))
         );
     }
 

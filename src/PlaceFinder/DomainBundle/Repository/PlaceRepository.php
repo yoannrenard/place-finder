@@ -3,6 +3,7 @@
 namespace PlaceFinder\DomainBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use PlaceFinder\APIBundle\Filter\PlacesFilter;
 
 /**
  * PlaceRepository
@@ -15,14 +16,14 @@ class PlaceRepository extends EntityRepository
     /**
      * Finds entities by a set of criteria.
      *
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int|null   $limit
-     * @param int|null   $offset
+     * @param PlacesFilter $placesFilter
+     * @param array|null   $orderBy
+     * @param int|null     $limit
+     * @param int|null     $offset
      *
      * @return array
      */
-    public function getAllFiltered(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null)
+    public function getAllFiltered(PlacesFilter $placesFilter, array $orderBy = null, $limit = null, $offset = null)
     {
         $qb = $this->getEntityManager()
             ->createQueryBuilder('p')
@@ -31,9 +32,9 @@ class PlaceRepository extends EntityRepository
             ->innerJoin('p.placeCategories', 'pc');
 
         // Online
-        if (isset($criteria['is_online']) && '' != $criteria['is_online']) {
+        if (null !== $placesFilter->getIsOnline()) {
             $qb->andWhere('p.isOnline = :isOnline')
-                ->setParameter('isOnline', (boolean) $criteria['is_online']);
+                ->setParameter('isOnline', (boolean) $placesFilter->getIsOnline());
         } else {
             $qb->andWhere('p.isOnline = :isOnline')
                 ->setParameter('isOnline', true);
