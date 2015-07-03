@@ -6,7 +6,6 @@ place_finder_admin:
 place_finder_api:
     resource: PlaceFinder\APIBundle\Controller\PlaceController
     prefix:   /api
-#    type:     rest
     type:     annotation
 
 NelmioApiDocBundle:
