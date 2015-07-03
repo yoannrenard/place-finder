@@ -34,6 +34,8 @@ class PlaceCategory
     protected $name;
 
     /**
+     * @var Place[]
+     *
      * @ORM\ManyToMany(targetEntity="Place", mappedBy="placeCategories")
      **/
     protected $places;

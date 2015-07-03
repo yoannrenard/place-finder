@@ -88,6 +88,8 @@ class Place
     protected $isOnline = false;
 
     /**
+     * @var PlaceCategory[]
+     *
      * @ORM\ManyToMany(targetEntity="PlaceCategory", inversedBy="places")
      * @ORM\JoinTable(name="place_categories")
      **/
