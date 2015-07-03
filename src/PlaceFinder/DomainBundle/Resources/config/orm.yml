@@ -1,0 +1,16 @@
+parameters:
+    # Entities
+    place_finder_domain.place.class: PlaceFinder\DomainBundle\Entity\Place
+    place_finder_domain.place_update_proposal.class: PlaceFinder\DomainBundle\Entity\PlaceUpdateProposal
+
+    # Managers
+    place_finder_domain.manager.place.class: PlaceFinder\DomainBundle\Manager\PlaceManager
+    place_finder_domain.manager.place_update_proposal.class: PlaceFinder\DomainBundle\Manager\PlaceUpdateProposalManager
+
+services:
+    place_finder_domain.manager.place:
+        class: %place_finder_domain.manager.place.class%
+        arguments: ["@doctrine.orm.default_entity_manager", %place_finder_domain.place.class%]
+    place_finder_domain.manager.place_update_proposal:
+        class: %place_finder_domain.manager.place_update_proposal.class%
+        arguments: ["@doctrine.orm.default_entity_manager", %place_finder_domain.place_update_proposal.class%]

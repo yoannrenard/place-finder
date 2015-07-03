@@ -1,0 +1,7 @@
+parameters:
+    place_finder_domain.provider.place.class: PlaceFinder\DomainBundle\Provider\PlaceProvider
+
+services:
+    place_finder_domain.provider.place:
+        class: %place_finder_domain.provider.place.class%
+        arguments: ["@place_finder_domain.manager.place"]
