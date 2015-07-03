@@ -35,7 +35,7 @@ class AbstractManager/* implements ManagerInterface*/
 
     public function getEm()
     {
-        return $this->em;
+        return $this->entityManager;
     }
 
     /**
@@ -61,7 +61,7 @@ class AbstractManager/* implements ManagerInterface*/
      */
     public function getReference($id)
     {
-        return $this->em->getReference($this->class, $id);
+        return $this->entityManager->getReference($this->class, $id);
     }
 
     /**
@@ -101,6 +101,6 @@ class AbstractManager/* implements ManagerInterface*/
      */
     public function flush()
     {
-        $this->em->flush();
+        $this->entityManager->flush();
     }
 }
