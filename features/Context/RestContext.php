@@ -96,7 +96,7 @@ class RestContext extends BehatContext
             }
         }
 
-        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), $paramList);
+        $this->iSendARequestTo(RequestInterface::GET, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), null, $paramList);
     }
 
     /**
@@ -112,7 +112,7 @@ class RestContext extends BehatContext
      */
     public function thatIWantToUpdatePartiallyTheIdentifiedByWithJson($objectType, $id, PyStringNode $string)
     {
-        $this->iSendARequestTo(RequestInterface::PATCH, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), json_decode($string->getRaw(), true));
+        $this->iSendARequestTo(RequestInterface::PATCH, sprintf('%s', sprintf('%s/%d', $this->getRestObjectFromObjectType($objectType), $id)), $string->getRaw());
     }
 
     /**
@@ -120,7 +120,7 @@ class RestContext extends BehatContext
      */
     public function thatIWantToUpdateTheIdentifiedByWithJson($objectType, $id, PyStringNode $string)
     {
-        $this->iSendARequestTo(RequestInterface::PUT, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), json_decode($string->getRaw(), true));
+        $this->iSendARequestTo(RequestInterface::PUT, sprintf('%s', $this->getRestObjectFromObjectType($objectType)), null, json_decode($string->getRaw(), true));
     }
 
     /**
@@ -216,11 +216,6 @@ class RestContext extends BehatContext
     public function theResponseShouldBeJson()
     {
         Assertions::assertSame('application/json', (string) $this->response->getHeader('content-type'));
-
-        $data = $this->getResponseBody('json');
-        if (!is_array($data) && empty($data)) {
-            throw new Exception(sprintf("Response was not JSON:%s%s", PHP_EOL, $this->response->getBody(true)));
-        }
     }
 
     /**

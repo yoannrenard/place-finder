@@ -19,7 +19,7 @@ Feature: Place-finder API /places/{id}
       | is_online | 1     |
     Then the response status code should be 200
     And the response should be JSON
-    And the response should contains 1 results
+    And the response should contains 5 results
 
 #  /places/1
   Scenario: Finding an existing place by id
@@ -66,7 +66,7 @@ Feature: Place-finder API /places/{id}
     """
     Then the response status code should be 201
     And the response should be JSON
-    And the "id" property equals 3
+    And the "id" property equals 103
     And the "name" property equals "AWin"
     And the "latitude" property equals 51.5082339
     And the "longitude" property equals -0.0673449
@@ -85,7 +85,7 @@ Feature: Place-finder API /places/{id}
     """
     Then the response status code should be 201
     And the response should be JSON
-    And the "id" property equals 4
+    And the "id" property equals 104
     And the "name" property equals "AWin"
     And the "latitude" property equals 51.5082339
     And the "longitude" property equals -0.0673449
@@ -96,23 +96,13 @@ Feature: Place-finder API /places/{id}
     Given that I want to update partially the "Place" identified by "3" with json:
     """
       {
-        "placefinder_bundle_domainbundle_place": {
-          "id": 3,
-          "name": "AWin UPDATED"
-        }
+        "operation": "replace",
+        "field": "field",
+        "value": "value"
       }
     """
-#    Then the response status code should be 201
-#    And that I want to find the "Place" identified by "3"
     Then the response status code should be 200
     And the response should be JSON
-    And the "id" property equals 3
-#    And the "create_dt" property equals "2014-12-29 15:25:15"
-#    And the "update_dt" property equals "2014-12-29 15:25:15"
-    And the "name" property equals "AWin UPDATED"
-    And the "latitude" property equals 51.5082339
-    And the "longitude" property equals -0.0673449
-    And the "is_online" property equals false
 
 # Update a place
 #  Scenario: Update a place

@@ -232,7 +232,7 @@ class PlaceController extends Controller
             );
         }
 
-        return $this->jsonResponse('', Response::HTTP_CREATED);
+        return $this->jsonResponse('', Response::HTTP_OK);
     }
 
     /**
