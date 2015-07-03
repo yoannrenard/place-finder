@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 class HttpHeaderLinkBuilderTest extends \PHPUnit_Framework_TestCase
 {
     const URL_PATTERN = 'MY_URL?page=%s';
-    const ROUTE         = 'api_places_get';
+    const ROUTE       = 'api_places_get';
 
     /** @var HttpHeaderLinkBuilder */
     protected $httpHeaderLinkBuilder;
@@ -62,7 +62,7 @@ class HttpHeaderLinkBuilderTest extends \PHPUnit_Framework_TestCase
         $nextPage      = $page<$lastPage? $page+1:$lastPage;
 
         $expectedLinks = array(
-            sprintf('<%s>; rel="%s"', self::URL_PATTERN.'1',            'first'),
+            sprintf('<%s>; rel="%s"', self::URL_PATTERN.'1',           'first'),
             sprintf('<%s>; rel="%s"', self::URL_PATTERN.$previousPage, 'prev'),
             sprintf('<%s>; rel="%s"', self::URL_PATTERN.$nextPage,     'next'),
             sprintf('<%s>; rel="%s"', self::URL_PATTERN.$lastPage,     'last'),

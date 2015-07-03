@@ -11,9 +11,7 @@ class AdminController extends Controller
     /**
      * Returns a list of places
      *
-     * @param Request $request
-     *
-//     * @return Response
+     * @return Response
      *
      * @Route("/", name="admin_index")
      */
