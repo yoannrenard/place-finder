@@ -37,7 +37,7 @@ class PlaceProvider implements PlaceProviderInterface
         $place = $this->placeManager->load($placeId);
 
         if (null === $place) {
-            throw new PlaceNotFoundException(sprintf('The place "%s" doesn\'t exist', $placeId));
+            throw new PlaceNotFoundException(sprintf('The place "#%s" doesn\'t exist', $placeId));
         }
 
         return $place;

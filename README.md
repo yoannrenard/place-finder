@@ -33,6 +33,8 @@ Place-finder REST API
 - Oauth
 - admin
 - use cnotroller as a service
+- internationalisation
+- Unit test PlaceRepository
 + move the SoftDeleterPlaceUpdater into the entity (this is domain)
 + use SerializationContext (http://jolicode.com/blog/how-to-implement-your-own-fields-inclusion-rules-with-jms-serializer)
 + Edit place (save the proposition up)

@@ -1,0 +1,7 @@
+parameters:
+    place_finder_api.builder.http_header_link.class: PlaceFinder\APIBundle\Builder\HttpHeaderLinkBuilder
+
+services:
+    place_finder_api.builder.http_header_link:
+        class: %place_finder_api.builder.http_header_link.class%
+        arguments: ["@router"]

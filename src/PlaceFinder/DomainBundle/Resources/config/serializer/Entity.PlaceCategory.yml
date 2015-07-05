@@ -2,6 +2,7 @@ PlaceFinder\DomainBundle\Entity\PlaceCategory:
     properties:
         id:
             type: integer
+            groups: [default]
         name:
             type: string
             groups: [default]

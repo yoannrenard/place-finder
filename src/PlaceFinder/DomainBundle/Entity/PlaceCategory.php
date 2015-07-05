@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * PlaceCategory
  *
  * @ORM\Table(name="place_category")
- * @ORM\Entity(repositoryClass="PlaceFinder\DomainBundle\Repository\PlaceCategoryRepository")
+ * @ORM\Entity
  */
 class PlaceCategory
 {
@@ -34,6 +34,8 @@ class PlaceCategory
     protected $name;
 
     /**
+     * @var Place[]
+     *
      * @ORM\ManyToMany(targetEntity="Place", mappedBy="placeCategories")
      **/
     protected $places;
